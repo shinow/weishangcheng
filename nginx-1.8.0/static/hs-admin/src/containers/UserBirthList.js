@@ -251,7 +251,7 @@ class UserBirthList extends React.Component {
             <thead>
               <tr>
                 <th>
-                  <input type="checkbox" onChange={this._checkChangeAll} checked={this.state.checked.length === this.state.users.length&&this.state.checked.length>0} />全选
+                  <input type="checkbox" onChange={this._checkChangeAll} checked={this.state.checked.length === this.state.users.length&&this.state.checked.length>0} /> 全选
                 </th>
                 <th>昵称</th>
                 <th>生日</th>

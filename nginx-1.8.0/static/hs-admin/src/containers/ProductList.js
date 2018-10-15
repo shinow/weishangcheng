@@ -116,7 +116,7 @@ class ProductList extends React.Component {
             <Link to={'/product/' + item.productId} className="btn btn-primary">
             编辑
             </Link>
-            <button className="btn btn-primary button-right" onClick={this._del.bind(this,item.productId)}>
+            <button className="btn btn-danger button-right" onClick={this._del.bind(this,item.productId)}>
             删除
             </button>
           </td>

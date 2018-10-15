@@ -123,6 +123,10 @@ If Not Exists(Select * From syscolumns where name='canshu_value_id' And id=Objec
 Begin
  alter table web_cart add canshu_value_id int;
 End
+If Not Exists(Select * From syscolumns where name='activity_markers' And id=Object_id('web_cart','U'))
+Begin
+ alter table web_cart add activity_markers int;
+End
 
 --web_categories
 If Not Exists(Select * From syscolumns where name='batchDiscount' And id=Object_id('web_categories','U'))
@@ -140,3 +144,28 @@ If Not Exists(Select * From syscolumns where name='endTimeStrs' And id=Object_id
 Begin
  alter table web_categories add endTimeStrs varchar(255);
 End
+
+--web_napa_stores
+If Not Exists(Select * From syscolumns where name='supportDeliver ' And id=Object_id('web_napa_stores','U'))
+Begin
+ alter table web_napa_stores add supportDeliver varchar(50);
+End
+
+---2018/10/10更新
+-----新增字段
+
+alter table web_products add appointed_time int
+  alter table web_product_groups add image_url varchar; 
+alter table web_orders add invalid int;
+ alter table web_cart add activity_markers int;
+
+
+insert into web_config(tag,value) values('loss','0')
+
+insert into web_config(tag,value) values('perfectBirthText','检测到你还没有填写生日信息，完善生日信息会有惊喜礼品赠送哦！')
+
+insert into web_config(tag,value) values('notice','欢迎光临！')
+
+insert into web_config(tag,value) values('bargainText','...')
+
+insert into web_config(tag,value) values('signText','...')

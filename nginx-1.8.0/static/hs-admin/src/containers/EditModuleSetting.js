@@ -59,7 +59,7 @@ class ModuleSetting extends React.Component {
             <Link to={'/moduleSetting?groupId=' + item.groupId} className='btn btn-primary' style={{marginRight:'7px',marginBottom:'5px'}}>
             编辑
             </Link>
-            <button className='btn btn-primary'  onClick={this._del.bind(this,item.groupId)} style={{marginRight:'7px',marginBottom:'5px'}}>
+            <button className='btn btn-danger'  onClick={this._del.bind(this,item.groupId)} style={{marginRight:'7px',marginBottom:'5px'}}>
             删除
             </button>
            <button type="submit" className='btn btn-primary' style={{marginRight:'5px',marginBottom:'7px'}} onClick={this._edit.bind(this,'/product-group-list?groupName='+item.groupName)}>  查看关联产品</button>

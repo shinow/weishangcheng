@@ -14,7 +14,8 @@ class Login extends React.Component {
     this.state = {
       error: '',
       account: '',
-      password: ''
+      password: '',
+      config: {}
     }
 
     this.tick = null
@@ -41,52 +42,64 @@ _sendMerchantCode = (cb) => {
         }
         cb && cb(err, res)
       })
+      
+      req.get('/uclee-backend-web/config')
+      .end((err, res) => {
+	      if (err) {
+	        return err
+	      }
+	      var data = JSON.parse(res.text)
+	      this.setState({
+	        config: data.config,
+	        logoUrl:data.config?data.config.logoUrl:'',
+	        ucenterImg:data.config?data.config.ucenterImg:''
+	      })
+	      console.log(this.state.config)
+	    })
   }
 componentWillUnmount() {
     clearInterval(this.tick)
   }
   render() {
     return (
-      <DocumentTitle title="admin登陆">
-      <div className="login">
-      	<div className="login-title">
-      		欢迎使用微商城后台管理系统
-      	</div>
-      	<div className="login-css">
-          <form
-            className="form-horizontal member-setting-form"
-            onSubmit={this._submit}
-          >
-                账号:
-                <input
-                  type="tel"
-                  name="account"
-                  className="input-group input-group-lg"
-                  placeholder="请输入你的账号"
-                  value={this.state.account}
-                  onChange={this._change}
-                />
-              密码:
-              <input
-                type="password"
-                name="password"
-                className="input-group input-group-lg"
-                placeholder="请输入你的密码"
-                value={this.state.password}
-                onChange={this._change}
-              />
-            <ErrorMsg msg={this.state.error} />
-            <div className="cs">
-              <button type="submit" className="btn btn-primary">
-                点击登陆
-              </button>
-            </div>
-            <div className="login-wb">
-              洪石软件提供技术服务支持
-            </div>
-          </form>
-        </div>
-      </div>
+      <DocumentTitle title="洪石商城">
+	      <div className="body">
+					<div className="body-main">
+        		<div className="denglu">
+        			<div style={{color:"white"}} className="subtitle">
+        				<span style={{height:'60px'}} ><font size="6">{this.state.config.brand}</font></span>
+        				<div style={{marginTop:'20px'}} >
+        					<span><font size="3">洪石微商店</font></span>
+				      	</div>
+				      </div>
+				      <form	className="form-horizontal member-setting-form"	onSubmit={this._submit}>
+                <div className="input-group" style={{marginTop:'60px'}}>
+								  <span className="input-group-addon" id="basic-addon1">账 号:</span>
+								  <input type="tel" name="account" className="form-control" placeholder="请输入账号" aria-describedby="basic-addon1" value={this.state.account} onChange={this._change} />
+								</div>
+								<div className="input-group" style={{marginTop:'40px'}}>
+								  <span className="input-group-addon" id="basic-addon1">密 码:</span>
+								  <input type="password" name="password" className="form-control" placeholder="请输入密码" aria-describedby="basic-addon1" value={this.state.password} onChange={this._change} />
+								</div>
+								<ErrorMsg msg={this.state.error} />
+            		<div style={{marginTop:'40px'}}>
+	              	<button type="submit" className="btn btn-info btn-lg btn-block">
+		                点击登陆
+		              </button>
+            		</div>
+      			</form>
+        		</div>
+        		<div style={{paddingTop:'180px'}} />
+			    	<div className="body-bottom">
+			        <span><a href="http://www.in80s.com/custom.asp?id=1">关于我们 </a></span>
+			        <span><a href="http://www.in80s.com/guestbook.asp">联系我们</a></span>
+			    		<div className="font" style={{marginTop:'10px', color:'white'}}>
+				    			洪石软件提供技术服务支持
+				    	</div>
+			    	</div>
+					</div>
+					<div style={{paddingTop:'25px'}} />
+	      </div>
       </DocumentTitle>
     )
   }
@@ -128,7 +141,6 @@ componentWillUnmount() {
           })
           return
         }else{
-        	alert("登陆成功")
           localStorage.setItem('account', data.account);
     			window.location='/'
         }

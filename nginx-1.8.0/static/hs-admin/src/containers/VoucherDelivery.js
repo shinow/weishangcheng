@@ -103,7 +103,7 @@ class VoucherDelivery extends React.Component {
           	<div className="form-group ">
           		<label className="control-label col-md-3" style={{marginTop:'10px'}}>派送礼券推送内容：</label>
               <div className="col-md-9" style={{marginTop:'10px'}}>
-                <textarea rows="3" cols="20" value={this.state.config.voucherSendInformation} name="voucherSendInformation" className="form-control" onChange={this._change}>
+                <textarea rows="3" cols="20" value={this.state.config.VoucherSendInformation} name="VoucherSendInformation" className="form-control" onChange={this._change}>
                 </textarea>
               </div>
           	</div>
@@ -128,7 +128,7 @@ class VoucherDelivery extends React.Component {
     e.preventDefault()
     var data = fto(e.target)
     console.log(data)
-    if(!data.voucherSendInformation) {
+    if(!data.VoucherSendInformation) {
       return this.setState({
         err: '请填写推送信息内容!'
       })

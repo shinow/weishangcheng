@@ -101,7 +101,7 @@ class SearchBar extends React.Component {
      e.preventDefault()
     var data = fto(e.target);
     console.log(data.keyword);
-    window.location="/all-product?keyword="+data.keyword;
+    window.location="/all-product?keyword="+data.keyword+"?merchantCode="+localStorage.getItem('merchantCode');
   }
 }
 
@@ -154,7 +154,7 @@ class HomeNav extends React.Component {
     var list = this.props.quickNavis.map((item,index)=>{
         return (
             <div
-              onClick={this._location.bind(this,"/all-product?naviId="+item.naviId)}
+              onClick={this._location.bind(this,"/all-product?naviId="+item.naviId+"?merchantCode="+localStorage.getItem('merchantCode'))}
               className="home-nav-item"
               key={index}
             >
@@ -495,7 +495,7 @@ class Home extends React.Component {
         }
         var result = JSON.parse(res.text);
         if(result.result){
-          window.location = '/cart'
+          window.location = '/cart?merchantCode='+localStorage.getItem('merchantCode')
         }else{
           alert(result.reason);
         }
@@ -607,7 +607,7 @@ class Home extends React.Component {
                   return(
                       <div className="product-item" key={index1}>
                         <div className='product-item-img'
-                          onClick={()=>{window.location="/detail/" + item1.productId}}
+                          onClick={()=>{window.location="/detail/" + item1.productId+"?merchantCode="+localStorage.getItem('merchantCode')}}
                         >
                         	<LazyLoad height={200}>
 	                          <img
@@ -667,7 +667,7 @@ class Home extends React.Component {
               }
             </div>
             <div className='text'>
-	            <Link to='/all-product'>
+	            <Link to={'/all-product?merchantCode='+localStorage.getItem('merchantCode')}>
 	              <span className="badge">查看更多<i className="glyphicon glyphicon-chevron-right" /></span>
 	            </Link>
             </div>

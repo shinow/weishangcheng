@@ -131,10 +131,7 @@ public class DuobaoSchedule {
 				for (PaymentOrder paymentOrder : paymentOrders) {
 					paymentOrder.setCheckCount(paymentOrder.getCheckCount() + 1);
 					paymentOrderMapper.updateCheckCount(paymentOrder);
-					System.out.println("paymentOrder1============="+paymentOrder);
-					System.out.println("paymentOrder2============="+JSON.toJSONString(paymentOrder));
 					Map<String, String> ret = userService.wxInitiativeCheck(paymentOrder);
-
 					if (ret.get("trade_state") != null && ret.get("trade_state").equals("SUCCESS")) {
 						userService.WechatNotifyHandle(paymentOrder.getPaymentSerialNum(), ret.get("transaction_id"), tmp);
 					}

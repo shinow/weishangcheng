@@ -48,7 +48,7 @@ class QuickNaviList extends React.Component {
           <td>{item.title}</td>
           <td>
             <button className='btn btn-primary' style={{margin: '0 5px'}} onClick={this._edit.bind(this,'/editQuickNavi?naviId='+ item.naviId)}>编辑</button>
-            <button className='btn btn-primary' style={{margin: '0 5px'}} onClick={this._delHandler.bind(this,item.naviId)}>   删除</button>
+            <button className='btn btn-danger' style={{margin: '0 5px'}} onClick={this._delHandler.bind(this,item.naviId)}>   删除</button>
             <button className='btn btn-primary' style={{margin: '0 5px'}} onClick={this._edit.bind(this,'/quick-navi-product?naviId='+item.naviId)}>   查看关联产品</button>
           </td>
         </tr>

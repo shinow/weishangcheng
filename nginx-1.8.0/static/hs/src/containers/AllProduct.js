@@ -13,7 +13,7 @@ class AllProductsCats extends React.Component{
 
 		var cats = this.props.cats.map(function(item, index) {
 			return (
-				<div className="all-prod-cat" onClick={()=>{window.location='/all-product?categoryId=' + item.categoryId}}>
+				<div className="all-prod-cat" onClick={()=>{window.location='/all-product?categoryId=' + item.categoryId+"&merchantCode="+localStorage.getItem('merchantCode')}}>
 					{/*<span className="all-prod-cat-icon">
 						{item.category.slice(0, 1)}
 					</span>*/}
@@ -80,7 +80,7 @@ class SearchBar extends React.Component {
      e.preventDefault()
     var data = fto(e.target);
     console.log(data.keyword);
-    window.location="/all-product?keyword="+data.keyword;
+    window.location="/all-product?keyword="+data.keyword+"&merchantCode="+localStorage.getItem('merchantCode');
   }
 }
 class AllProductsTab extends React.Component{
@@ -134,22 +134,22 @@ class AllProductsTab extends React.Component{
 	_tap = (tag,q) => {
 		if(tag===1){
 			if(this.props.location!=null&&this.props.location.query!=null&&this.props.location.query.categoryId!==null){
-				window.location='all-product?isSaleDesc='+q+'&categoryId='+this.props.location.query.categoryId;
+				window.location='all-product?isSaleDesc='+q+'&categoryId='+this.props.location.query.categoryId+"&merchantCode="+localStorage.getItem('merchantCode');
 			}else{
-				window.location='all-product?isSaleDesc='+q;
+				window.location='all-product?isSaleDesc='+q+"&merchantCode="+localStorage.getItem('merchantCode');
 			}
 			
 		}else if(tag===2){
 			if(this.props.location!=null&&this.props.location.query!=null&&this.props.location.query.categoryId!==null){
-				window.location='all-product?isPriceDesc='+q+'&categoryId='+this.props.location.query.categoryId;
+				window.location='all-product?isPriceDesc='+q+'&categoryId='+this.props.location.query.categoryId+"&merchantCode="+localStorage.getItem('merchantCode');
 			}else{
-				window.location='all-product?isPriceDesc='+q;
+				window.location='all-product?isPriceDesc='+q+"&merchantCode="+localStorage.getItem('merchantCode');
 			}
 		}else{
 			if(this.props.location!=null&&this.props.location.query!=null&&this.props.location.query.categoryId!==null){
-				window.location='all-product?categoryId='+this.props.location.query.categoryId;
+				window.location='all-product?categoryId='+this.props.location.query.categoryId+"&merchantCode="+localStorage.getItem('merchantCode');
 			}else{
-				window.location='all-product';
+				window.location='all-product'+"?merchantCode="+localStorage.getItem('merchantCode');
 			}
 		}
 		
@@ -163,10 +163,10 @@ class Item extends React.Component{
 	render(){
 		return (
 			<div className='all-prod-item'>
-				<div className='left' onClick={this._location.bind(this,'/detail/'+this.props.product.productId)}>
+				<div className='left' onClick={this._location.bind(this,'/detail/'+this.props.product.productId+"&merchantCode="+localStorage.getItem('merchantCode'))}>
 					<img className='image' src={this.props.product.image} alt=""/>
 				</div>
-				<div className='right' onClick={this._location.bind(this,'/detail/'+this.props.product.productId)}>
+				<div className='right' onClick={this._location.bind(this,'/detail/'+this.props.product.productId+"&merchantCode="+localStorage.getItem('merchantCode'))}>
 					<div className='title'>{this.props.product.title}</div>
 					<div className='bottom'>
 						<div className='count'>
@@ -202,7 +202,7 @@ class AllProduct extends React.Component{
 				console.log(this.state.products.length);
 				if(!this.state.products.length>0){
 					alert("没有找到符合条件的商品，去商城首页逛逛吧...");
-					window.location='/'
+					window.location='/?merchantCode='+localStorage.getItem('merchantCode')
 				}
 			});
 		}.bind(this));

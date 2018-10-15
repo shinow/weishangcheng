@@ -5,7 +5,7 @@ class Home extends React.Component {
   render() {
     return (
       <DocumentTitle title="首页">
-        <div className="home">欢迎来到后台管理页面</div>
+        <div className="home">欢迎使用洪石商城后台管理系统</div>
       </DocumentTitle>
       )
   }

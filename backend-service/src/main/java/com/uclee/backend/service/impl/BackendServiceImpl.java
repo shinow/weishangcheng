@@ -1899,9 +1899,6 @@ public class BackendServiceImpl implements BackendServiceI {
 	//更新groupName
 	@Override
 	public int updateGroupName(ProductGroup productGroup) {
-
-//		if(productGroup.getGroupName()!=null){
-		System.out.println("2222"+JSON.toJSONString(productGroup));
 		return productGroupMapper.updateByPrimaryKey(productGroup);
 
 	}

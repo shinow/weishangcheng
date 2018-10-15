@@ -53,7 +53,7 @@ class NapaStoreList extends React.Component {
                         <td> {item.hsName}</td>
                         <td>{item.addrDetail}</td>
                         <td>
-                          <Link to={`/editStore?storeId=${item.storeId}`} className="btn btn-danger">编辑店铺</Link>
+                          <Link to={`/editStore?storeId=${item.storeId}`} className="btn btn-primary">编辑店铺</Link>
                           <button onClick={this._del.bind(this,item.storeId)} className="btn btn-danger">删除店铺</button>
                         </td>
                     </tr>

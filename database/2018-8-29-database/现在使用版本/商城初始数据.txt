@@ -172,7 +172,7 @@ insert into web_config (tag,value) values ('birthText','');
 
 insert into web_config (tag,value) values ('salesText','');
 
-insert into web_config (tag,value) values ('restrictedDistance','50');
+insert into web_config (tag,value) values ('restrictedDistance','500');
 
 insert into web_config (tag,value) values ('startUp','1');
 
@@ -190,13 +190,15 @@ insert into web_config (tag,value) values('unbundling',0);
 
 insert into web_config(tag,value) values('brand','洪石软件');--设置品牌名
 
-insert into web_config(tag,value) values('qq','2217904463');--设置品牌名
+insert into web_config(tag,value) values('qq','2217904463');--设置kefu
 
 insert into web_config(tag,value) values('loss','0')
 
 insert into web_config(tag,value) values('perfectBirthText','检测到你还没有填写生日信息，完善生日信息会有惊喜礼品赠送哦！')
 
 insert into web_config(tag,value) values('notice','特大消息，周日全场八折！')
+
+insert into web_config(tag,value) values('signText','...')
 
 insert into web_config (tag,value) values ('zhengshu','D:\zhengshu\hs\apiclient_cert.p12'); --证书路径
 

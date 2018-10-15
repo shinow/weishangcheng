@@ -117,7 +117,7 @@ class CommentList extends React.Component {
             <button className="btn btn-primary" onClick={this.openModal.bind(this,item.id,item.backTitle)}>
               回复
             </button>
-            <button className="btn btn-primary" style={{marginTop:'5px'}} onClick={this.delHandle.bind(this,item.id)}>
+            <button className="btn btn-danger" style={{marginTop:'5px'}} onClick={this.delHandle.bind(this,item.id)}>
               删除回复
             </button>
           </td>
