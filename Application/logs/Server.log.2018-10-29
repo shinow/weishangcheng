@@ -1,0 +1,229 @@
+2018-10-29 20:15:32,529 - {dataSource-1} inited
+ 2018-10-29 20:15:33,547 - no bean
+ 2018-10-29 20:15:33,662 - {dataSource-2} inited
+ 2018-10-29 20:15:34,172 - no bean
+ 2018-10-29 20:15:34,287 - {dataSource-3} inited
+ 2018-10-29 20:18:13,448 - merchantCode:hs
+ 2018-10-29 20:18:13,477 - merchantCode:null
+ 2018-10-29 20:18:14,088 - merchantCode:null
+ 2018-10-29 20:18:18,415 - merchantCode:null
+ 2018-10-29 20:18:18,433 - merchantCode:null
+ 2018-10-29 20:18:21,991 - merchantCode:hs
+ 2018-10-29 20:18:21,992 - merchantCode:null
+ 2018-10-29 20:18:21,994 - merchantCode:null
+ 2018-10-29 20:18:21,996 - merchantCode:null
+ 2018-10-29 20:18:21,999 - merchantCode:null
+ 2018-10-29 20:18:25,241 - merchantCode:hs
+ 2018-10-29 20:18:25,242 - merchantCode:null
+ 2018-10-29 20:18:25,246 - merchantCode:null
+ 2018-10-29 20:18:28,268 - merchantCode:null
+ 2018-10-29 20:20:46,044 - merchantCode:null
+ 2018-10-29 20:20:46,051 - merchantCode:hs
+ 2018-10-29 20:20:46,052 - merchantCode:null
+ 2018-10-29 20:21:21,812 - merchantCode:null
+ 2018-10-29 20:21:21,812 - merchantCode:hs
+ 2018-10-29 20:21:21,812 - merchantCode:null
+ 2018-10-29 20:21:47,808 - merchantCode:null
+ 2018-10-29 20:21:47,809 - merchantCode:hs
+ 2018-10-29 20:21:47,811 - merchantCode:null
+ 2018-10-29 20:22:26,682 - merchantCode:null
+ 2018-10-29 20:22:26,687 - merchantCode:hs
+ 2018-10-29 20:22:26,688 - merchantCode:null
+ 2018-10-29 20:24:09,375 - {dataSource-1} inited
+ 2018-10-29 20:24:09,944 - no bean
+ 2018-10-29 20:24:10,076 - {dataSource-2} inited
+ 2018-10-29 20:24:10,733 - no bean
+ 2018-10-29 20:24:10,819 - {dataSource-3} inited
+ 2018-10-29 20:24:25,058 - merchantCode:null
+ 2018-10-29 20:24:25,058 - merchantCode:null
+ 2018-10-29 20:24:25,058 - merchantCode:hs
+ 2018-10-29 20:24:30,438 - merchantCode:null
+ 2018-10-29 20:24:30,495 - merchantCode:null
+ 2018-10-29 20:24:32,177 - productId:51
+ 2018-10-29 20:24:33,210 - merchantCode:hs
+ 2018-10-29 20:24:33,213 - merchantCode:null
+ 2018-10-29 20:24:33,215 - merchantCode:null
+ 2018-10-29 20:24:35,166 - merchantCode:null
+ 2018-10-29 20:33:53,983 - {dataSource-1} inited
+ 2018-10-29 20:33:54,410 - no bean
+ 2018-10-29 20:33:54,522 - {dataSource-2} inited
+ 2018-10-29 20:33:54,891 - no bean
+ 2018-10-29 20:33:54,974 - {dataSource-3} inited
+ 2018-10-29 20:34:20,949 - merchantCode:null
+ 2018-10-29 20:34:20,951 - merchantCode:null
+ 2018-10-29 20:34:20,954 - merchantCode:hs
+ 2018-10-29 20:34:22,904 - merchantCode:null
+ 2018-10-29 20:34:22,908 - merchantCode:null
+ 2018-10-29 20:34:22,909 - merchantCode:hs
+ 2018-10-29 20:34:28,564 - merchantCode:null
+ 2018-10-29 20:34:28,661 - merchantCode:null
+ 2018-10-29 20:34:29,843 - productId:51
+ 2018-10-29 20:34:30,689 - merchantCode:null
+ 2018-10-29 20:34:30,695 - merchantCode:hs
+ 2018-10-29 20:34:30,695 - merchantCode:null
+ 2018-10-29 20:34:32,340 - merchantCode:null
+ 2018-10-29 20:36:08,425 - merchantCode:null
+ 2018-10-29 20:36:08,427 - merchantCode:hs
+ 2018-10-29 20:36:08,439 - merchantCode:null
+ 2018-10-29 20:36:12,793 - merchantCode:null
+ 2018-10-29 20:36:12,796 - merchantCode:hs
+ 2018-10-29 20:36:12,798 - merchantCode:null
+ 2018-10-29 20:37:39,187 - merchantCode:null
+ 2018-10-29 20:37:39,191 - merchantCode:hs
+ 2018-10-29 20:37:39,191 - merchantCode:null
+ 2018-10-29 20:37:43,171 - merchantCode:null
+ 2018-10-29 20:37:43,175 - merchantCode:hs
+ 2018-10-29 20:37:43,175 - merchantCode:null
+ 2018-10-29 20:37:46,406 - merchantCode:null
+ 2018-10-29 20:37:46,407 - merchantCode:hs
+ 2018-10-29 20:37:46,408 - merchantCode:null
+ 2018-10-29 20:37:48,869 - merchantCode:null
+ 2018-10-29 20:37:48,872 - merchantCode:hs
+ 2018-10-29 20:37:48,875 - merchantCode:null
+ 2018-10-29 20:41:07,190 - {dataSource-1} inited
+ 2018-10-29 20:41:07,660 - no bean
+ 2018-10-29 20:41:07,789 - {dataSource-2} inited
+ 2018-10-29 20:41:08,190 - no bean
+ 2018-10-29 20:41:08,290 - {dataSource-3} inited
+ 2018-10-29 20:41:37,300 - merchantCode:null
+ 2018-10-29 20:41:37,306 - merchantCode:hs
+ 2018-10-29 20:41:37,306 - merchantCode:null
+ 2018-10-29 20:43:39,896 - merchantCode:null
+ 2018-10-29 20:43:39,900 - merchantCode:hs
+ 2018-10-29 20:43:39,905 - merchantCode:null
+ 2018-10-29 20:45:09,523 - {dataSource-1} inited
+ 2018-10-29 20:45:09,935 - no bean
+ 2018-10-29 20:45:10,077 - {dataSource-2} inited
+ 2018-10-29 20:45:10,537 - no bean
+ 2018-10-29 20:45:10,631 - {dataSource-3} inited
+ 2018-10-29 20:45:28,154 - merchantCode:null
+ 2018-10-29 20:45:28,154 - merchantCode:hs
+ 2018-10-29 20:45:28,154 - merchantCode:null
+ 2018-10-29 20:48:01,956 - {dataSource-1} inited
+ 2018-10-29 20:48:02,325 - no bean
+ 2018-10-29 20:48:02,463 - {dataSource-2} inited
+ 2018-10-29 20:48:02,916 - no bean
+ 2018-10-29 20:48:03,040 - {dataSource-3} inited
+ 2018-10-29 20:48:58,979 - merchantCode:null
+ 2018-10-29 20:48:58,979 - merchantCode:hs
+ 2018-10-29 20:48:58,986 - merchantCode:null
+ 2018-10-29 20:49:02,815 - merchantCode:null
+ 2018-10-29 20:49:02,820 - merchantCode:hs
+ 2018-10-29 20:49:02,823 - merchantCode:null
+ 2018-10-29 20:49:23,905 - merchantCode:null
+ 2018-10-29 20:49:23,907 - merchantCode:hs
+ 2018-10-29 20:49:23,936 - merchantCode:null
+ 2018-10-29 20:50:36,401 - {dataSource-1} inited
+ 2018-10-29 20:50:36,848 - no bean
+ 2018-10-29 20:50:37,012 - {dataSource-2} inited
+ 2018-10-29 20:50:37,467 - no bean
+ 2018-10-29 20:50:37,590 - {dataSource-3} inited
+ 2018-10-29 20:50:41,916 - merchantCode:null
+ 2018-10-29 20:50:41,917 - merchantCode:hs
+ 2018-10-29 20:50:41,916 - merchantCode:null
+ 2018-10-29 20:50:51,033 - merchantCode:null
+ 2018-10-29 20:50:51,036 - merchantCode:hs
+ 2018-10-29 20:50:51,037 - merchantCode:null
+ 2018-10-29 20:53:12,223 - merchantCode:null
+ 2018-10-29 20:53:12,223 - merchantCode:hs
+ 2018-10-29 20:53:12,228 - merchantCode:null
+ 2018-10-29 20:53:32,276 - merchantCode:null
+ 2018-10-29 20:53:32,278 - merchantCode:hs
+ 2018-10-29 20:53:32,280 - merchantCode:null
+ 2018-10-29 20:54:53,549 - merchantCode:null
+ 2018-10-29 20:54:53,553 - merchantCode:hs
+ 2018-10-29 20:54:53,554 - merchantCode:null
+ 2018-10-29 20:55:04,267 - merchantCode:null
+ 2018-10-29 20:55:04,274 - merchantCode:hs
+ 2018-10-29 20:55:04,274 - merchantCode:null
+ 2018-10-29 20:57:33,428 - merchantCode:hs
+ 2018-10-29 20:57:33,428 - merchantCode:null
+ 2018-10-29 20:57:33,431 - merchantCode:null
+ 2018-10-29 20:58:52,204 - merchantCode:null
+ 2018-10-29 20:58:56,550 - merchantCode:null
+ 2018-10-29 20:58:56,569 - merchantCode:null
+ 2018-10-29 20:58:56,570 - merchantCode:hs
+ 2018-10-29 20:59:30,924 - merchantCode:null
+ 2018-10-29 20:59:30,931 - merchantCode:hs
+ 2018-10-29 20:59:30,931 - merchantCode:null
+ 2018-10-29 20:59:32,543 - merchantCode:null
+ 2018-10-29 20:59:33,840 - merchantCode:null
+ 2018-10-29 20:59:38,063 - merchantCode:null
+ 2018-10-29 20:59:38,065 - merchantCode:hs
+ 2018-10-29 20:59:38,068 - merchantCode:null
+ 2018-10-29 20:59:39,706 - merchantCode:null
+ 2018-10-29 20:59:39,721 - merchantCode:hs
+ 2018-10-29 20:59:39,721 - merchantCode:null
+ 2018-10-29 21:01:57,031 - {dataSource-1} inited
+ 2018-10-29 21:01:57,458 - no bean
+ 2018-10-29 21:01:57,588 - {dataSource-2} inited
+ 2018-10-29 21:01:58,097 - no bean
+ 2018-10-29 21:01:58,235 - {dataSource-3} inited
+ 2018-10-29 21:02:02,305 - merchantCode:null
+ 2018-10-29 21:02:02,305 - merchantCode:hs
+ 2018-10-29 21:02:02,305 - merchantCode:null
+ 2018-10-29 21:02:05,525 - merchantCode:null
+ 2018-10-29 21:02:05,528 - merchantCode:null
+ 2018-10-29 21:02:05,526 - merchantCode:hs
+ 2018-10-29 21:02:08,373 - merchantCode:null
+ 2018-10-29 21:02:08,379 - merchantCode:hs
+ 2018-10-29 21:02:08,380 - merchantCode:null
+ 2018-10-29 21:04:24,564 - merchantCode:null
+ 2018-10-29 21:04:24,590 - merchantCode:null
+ 2018-10-29 21:04:26,305 - merchantCode:null
+ 2018-10-29 21:04:26,891 - 更新微信Token
+ 2018-10-29 21:04:26,915 - {"merchantcode":"1253393501","appid":"wx68abe3fb2a71dcc7","appsecret":"00030b62032af67f83e535223616a0d6","notifyurl":"http://wsc7.in80s.com/seller/WCNotifyHandler","appkey":"00030b62032af67f83e535223616a0d6"}
+ 2018-10-29 21:09:45,066 - {dataSource-1} inited
+ 2018-10-29 21:09:45,542 - no bean
+ 2018-10-29 21:09:45,679 - {dataSource-2} inited
+ 2018-10-29 21:09:46,175 - no bean
+ 2018-10-29 21:09:46,280 - {dataSource-3} inited
+ 2018-10-29 21:10:11,689 - merchantCode:null
+ 2018-10-29 21:10:15,035 - merchantCode:null
+ 2018-10-29 21:10:15,298 - merchantCode:null
+ 2018-10-29 21:10:19,200 - merchantCode:null
+ 2018-10-29 21:10:19,202 - merchantCode:hs
+ 2018-10-29 21:10:19,205 - merchantCode:null
+ 2018-10-29 21:10:19,376 - merchantCode:null
+ 2018-10-29 21:11:48,162 - merchantCode:null
+ 2018-10-29 21:11:48,166 - merchantCode:hs
+ 2018-10-29 21:11:48,168 - merchantCode:null
+ 2018-10-29 21:11:48,267 - merchantCode:null
+ 2018-10-29 21:11:50,836 - merchantCode:null
+ 2018-10-29 21:11:50,840 - merchantCode:hs
+ 2018-10-29 21:11:50,843 - merchantCode:null
+ 2018-10-29 21:11:50,957 - merchantCode:null
+ 2018-10-29 21:11:53,121 - merchantCode:null
+ 2018-10-29 21:11:53,126 - merchantCode:hs
+ 2018-10-29 21:11:53,126 - merchantCode:null
+ 2018-10-29 21:11:53,245 - merchantCode:null
+ 2018-10-29 21:17:14,777 - {dataSource-1} inited
+ 2018-10-29 21:17:15,192 - no bean
+ 2018-10-29 21:17:15,327 - {dataSource-2} inited
+ 2018-10-29 21:17:15,764 - no bean
+ 2018-10-29 21:17:15,858 - {dataSource-3} inited
+ 2018-10-29 21:17:21,499 - merchantCode:null
+ 2018-10-29 21:17:21,499 - merchantCode:null
+ 2018-10-29 21:17:21,499 - merchantCode:hs
+ 2018-10-29 21:17:21,789 - merchantCode:null
+ 2018-10-29 21:18:28,370 - {dataSource-1} inited
+ 2018-10-29 21:18:28,879 - no bean
+ 2018-10-29 21:18:29,031 - {dataSource-2} inited
+ 2018-10-29 21:18:29,472 - no bean
+ 2018-10-29 21:18:29,591 - {dataSource-3} inited
+ 2018-10-29 21:18:33,672 - merchantCode:null
+ 2018-10-29 21:18:33,672 - merchantCode:hs
+ 2018-10-29 21:18:33,672 - merchantCode:null
+ 2018-10-29 21:18:34,152 - merchantCode:null
+ 2018-10-29 21:19:33,428 - {dataSource-1} inited
+ 2018-10-29 21:19:33,884 - no bean
+ 2018-10-29 21:19:34,009 - {dataSource-2} inited
+ 2018-10-29 21:19:34,459 - no bean
+ 2018-10-29 21:19:34,556 - {dataSource-3} inited
+ 2018-10-29 21:19:44,236 - merchantCode:null
+ 2018-10-29 21:19:44,240 - merchantCode:null
+ 2018-10-29 21:19:44,246 - merchantCode:hs
+ 2018-10-29 21:20:22,303 - merchantCode:hs
+ 2018-10-29 21:20:22,303 - merchantCode:null
+ 2018-10-29 21:20:22,307 - merchantCode:null
+ 

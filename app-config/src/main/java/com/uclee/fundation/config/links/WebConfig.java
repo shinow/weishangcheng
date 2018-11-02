@@ -55,4 +55,6 @@ public interface WebConfig {
 	String notice = "notice";
 	String  bargainText = "bargainText";
 	String perfectBirthText = "perfectBirthText";
+	String whetherEnableAlipay = "whetherEnableAlipay";
+	String linkCouponText = "linkCouponText";
 }                      

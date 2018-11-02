@@ -78,6 +78,11 @@ class Menu extends React.Component {
 								</Link>
 							</li>
 							<li>
+								<Link to={'/fullSendCoupon?merchantCode='+localStorage.getItem('merchantCode')}>
+								    满额送优惠券
+								</Link>
+							</li>
+							<li>
 								<Link to={'/lottery?merchantCode='+localStorage.getItem('merchantCode')}>
 								    积分抽奖配置
 								</Link>
@@ -115,6 +120,11 @@ class Menu extends React.Component {
 							<li>
 								<Link to={'/product-voucher-list?merchantCode='+localStorage.getItem('merchantCode')}>
 								    指定产品送券
+								</Link>
+							</li>
+							<li>
+								<Link to={'/linkCoupon?merchantCode='+localStorage.getItem('merchantCode')}>
+								    指定链接送券
 								</Link>
 							</li>
 							<li>

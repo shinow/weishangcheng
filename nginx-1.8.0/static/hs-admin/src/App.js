@@ -1,25 +1,132 @@
-import React, { Component } from 'react';
-import Menu from './components/Menu';
-import req from 'superagent';
-import { Link } from 'react-router';
+import React, { Component } from 'react'
+import req from 'superagent'
+import StoreBar from './components/StoreBar'
+import './App.css'
+function authURL(u, appId) {
+  return (
+    'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' +
+    appId +
+    '&redirect_uri=' +
+    encodeURIComponent(u) +
+    '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'
+  )
+}
+
+function getInitialLoadingState() {
+  return process.env.REACT_APP_LOCAL_DEBUG ? false : true
+}
 
 class App extends Component {
-	  constructor(props) {
+  constructor(props) {
     super(props)
     this.state = {
-      account:localStorage.getItem('account'),
-      config:{}
+      loading: getInitialLoadingState()
     }
-  }
-  componentDidMount() {
-  	if(!localStorage.getItem('account')){
-     	alert("你还没有登陆，请先登陆！");
-      window.location='/login?merchantCode='+localStorage.getItem('merchantCode')
-    }
-    this._sendMerchantCode()
   }
 
-  _sendMerchantCode = (cb) => {
+  componentDidMount() {
+    var q = this.props.location.query
+
+    if (q.merchantCode) {
+      localStorage.setItem('merchantCode', q.merchantCode)
+    }
+
+    if (q.loginRequired === 'false') {
+      return this.setState({
+        loading: false
+      })
+    }
+
+    req
+      .get('/uclee-user-web/getAppId')
+      .query({
+        merchantCode: localStorage.getItem('merchantCode')
+      })
+      .end((err, resAppId) => {
+        if (err) {
+          return err
+        }
+
+        this._sendMerchantCode((err, res) => {
+          if (err) {
+            alert('商户信息不正确，请重新从公众号打开')
+            return err
+          }
+
+          /*if (!this.state.loading) {
+            return
+          }*/
+
+          // 有 code 访问 callback
+          if (q.code) {
+            this._wxCallback(() => {
+              this.setState({
+                loading: false
+              })
+            })
+            return
+          } else {
+            // 没有 code，检查登录
+            this._log(yes => {
+              if (yes) {
+                this.setState({
+                  loading: false
+                })
+              }
+            }, resAppId.text)
+          }
+        })
+      })
+
+    if (localStorage.getItem('merchantCode')) {
+      req
+        .get('/uclee-user-web/getPageTitle')
+        .query({
+          mCode: localStorage.getItem('merchantCode')
+        })
+        .end((err, res) => {
+          if (err) {
+            return err
+          }
+
+          document.title = res.body.merchantName
+        })
+    }
+  }
+
+  _log = (cb, appId) => {
+    req.get('/uclee-user-web/getUserInfo').end((err, res) => {
+      if (err) {
+        window.location='/';
+        return err
+      }
+
+      // 没有登录
+      if (!res.body.nickName) {
+        window.location = authURL(window.location.href, appId)
+        return
+      }
+
+      cb && cb(true)
+    })
+  }
+
+  _wxCallback = cb => {
+    req
+      .get('/uclee-user-web/weiXinCallback')
+      .query({
+        code: this.props.location.query.code
+      })
+      .end((err, res) => {
+        if (err) {
+          return err
+        }
+
+        cb && cb()
+      })
+  }
+
+  _sendMerchantCode = cb => {
     var mCode = localStorage.getItem('merchantCode')
     var query = this.props.location.query
     if (query && query.merchantCode) {
@@ -37,55 +144,30 @@ class App extends Component {
         }
         cb && cb(err, res)
       })
-      
-      req.get('/uclee-backend-web/config')
-      .end((err, res) => {
-	      if (err) {
-	        return err
-	      }
-	      var data = JSON.parse(res.text)
-	      this.setState({
-	        config: data.config,
-	        logoUrl:data.config?data.config.logoUrl:'',
-	        ucenterImg:data.config?data.config.ucenterImg:''
-	      })
-	      console.log(this.state.config)
-	    })
-      
   }
 
   render() {
-    return (
-    	<div>
-    		<div style={{background:'#4D4D4D', height:'55px', width:'100%'}}>
-    			<span className="pull-left" style={{padding:'10px 0PX 0px 30px', color:'white'}}>
-    				<Link to={'/?merchantCode='+localStorage.getItem('merchantCode')}>
-	    				<font size="5" style={{color:'white'}}>{this.state.config.brand}</font>
-	    				<font size="3" style={{color:'white'}}>洪石微商店</font>
-	    			</Link>
-    		  </span>
-    		  <div style={{padding:'0px 0PX 0px 330px'}}>
-    				<Menu />
-    			</div>
-    			<span className="pull-right" style={{padding:'20px 60PX 0px 30px' ,color:'white'}}>欢迎您,管理员~~</span>
-    		</div>
-    		<div className="pull-right" style={{padding:'0px 10PX 0px 0px'}}>
-    			<input type="button" name="Submit" onClick={() => {javascript:history.back(-1)}} value="回到上一页" />
-    		</div>
-    		<div style={{paddingTop:'30px'}} />
-	      <div className="row">
-	      	<div className="col-md-2" />
-	        <div className="col-md-8">
-	          <div style={{paddingTop:'30px'}} />
-	          {this.props.children}
-	          <div style={{paddingTop:'6px'}} />
-	        </div>
-	        <div className="col-md-2" />
-	      </div>
-	      </div>
+    var pathname = this.props.location.pathname
+    var showStoreBar =
+      pathname === '/' ||
+      pathname.indexOf('/detail/') !== -1 ||
+      pathname === '/cart'
+    /*|| pathname === '/order'*/
 
-    );
+    return (
+      <div className="app">
+        {this.state.loading
+          ?	<div className="center">
+
+          	</div>
+          : <div className="main">
+              {showStoreBar ? <StoreBar /> : null}
+
+              {this.props.children}
+            </div>}
+      </div>
+    )
   }
 }
 
-export default App;
+export default App

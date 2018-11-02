@@ -1,125 +1,106 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import 'bootstrap/dist/css/bootstrap.min.css'
 import 'font-awesome/css/font-awesome.min.css'
 import './index.css';
 import App from './App'
 import Home from './containers/Home'
-import Demo from './containers/Demo'
-import Product from './containers/Product'
-import AddStore from './containers/AddStore'
-import EditStore from './containers/EditStore'
-import EditQuickNavi from './containers/EditQuickNavi'
-import EditBanner from './containers/EditBanner'
-import NapaStoreList from './containers/NapaStoreList'
-import UserList from './containers/UserList'
-import UserBirthList from './containers/UserBirthList'
-import UserUnBuyList from './containers/UserUnBuyList'
-import FullCutShipping from './containers/FullCutShipping'
-import AddUser from './containers/AddUser'
-import EditPhoneUser from './containers/EditPhoneUser'
-import PhoneUserList from './containers/PhoneUserList'
-import GlobalConfig from './containers/GlobalConfig'
-import RechargeConfig from './containers/RechargeConfig'
-import RechargeConfigNew from './containers/RechargeConfigNew'
-import Login from './containers/Login'
-import ProductList from './containers/ProductList'
-import QuickNaviList from './containers/QuickNaviList'
-import QuickNaviProduct from './containers/QuickNaviProduct'
-import EditQuickNaviProduct from './containers/EditQuickNaviProduct'
-import BannerList from './containers/BannerList'
-import ProductGroupList from './containers/ProductGroupList'
-import CategoryList from './containers/CategoryList'
-import CommentList from './containers/CommentList'
-import Freight from './containers/Freight'
-import StoreIntro from './containers/StoreIntro'
-import Lottery from './containers/LotteryConfig'
-import EditProductGroup from './containers/EditProductGroup'
-import ModuleSetting from './containers/ModuleSetting'
-import EditModuleSetting from './containers/EditModuleSetting'
+import MemberCenter from './containers/MemberCenter'
+import BossCenter from './containers/BossCenter'
+import Recharge from './containers/Recharge'
+import UnpayOrderList from './containers/UnpayOrderList'
+import OrderList from './containers/OrderList'
+import MemberCard from './containers/MemberCard'
+import Information from './containers/Information'
+import Install from './containers/Install'
+import MemberSetting from './containers/MemberSetting'
+import MemberSetting1 from './containers/MemberSetting1'
+import MemberSetting2 from './containers/MemberSetting2'
+import Forces from './containers/Forces'
+import RechargeList from './containers/RechargeList'
+import Detail from './containers/Detail'
+import Cart from './containers/Cart'
+import Payment from './containers/Payment'
+import PhoneLogin from './containers/PhoneLogin'
+import PaymentAlipay from './containers/PaymentAlipay'
+import DistributionCenter from './containers/DistributionCenter'
+import DistributionUser from './containers/DistributionUser'
+import DistributionOrder from './containers/DistributionOrder'
+import EditAddr from './containers/EditAddr'
+import Address from './containers/Address'
+import Coupon from './containers/Coupon'
+import Order from './containers/Order'
+import StoreList from './containers/StoreList'
+import Lottery from './containers/Lottery'
+import StoreInfo from './containers/StoreInfo'
+import AllProduct from './containers/AllProduct'
 import ShakeMonitor from './containers/ShakeMonitor'
-import EditCategory from './containers/EditCategory'
-import BirthVoucher from './containers/BirthVoucher'
-import FullCut from './containers/FullCut'
-import BindMemberSetting from './containers/BindMemberSetting'
-import EvaluationConfiguration from './containers/EvaluationConfiguration'
-import IntegralInConfiguration from './containers/IntegralInConfiguration'
-import SystemConfig from './containers/SystemConfig'
-import ActivityConfig from './containers/ActivityConfig'
-import RechargeConfigList from './containers/RechargeConfigList'
-import OrderSettingPick from './containers/OrderSettingPick'
-import AuditRefund from './containers/AuditRefund'
-import AuditRefundOrderDetail from './containers/AuditRefundOrderDetail'
-import VipList from './containers/VipList'
-import VoucherDelivery from './containers/VoucherDelivery'
-import BargainSetting from './containers/BargainSetting'
-import BargainList from './containers/BargainList'
-import ProductVoucherSetting from './containers/ProductVoucherSetting'
-import ProductVoucherList from './containers/ProductVoucherList'
-import EditProductVoucherLinks from './containers/EditProductVoucherLinks'
+import Comment from './containers/Comment'
+import CommentDetail from './containers/CommentDetail'
+import DataView from './containers/DataView'
+import ShowCoupon from './containers/ShowCoupon'
+import SignIn from './containers/SignIn'
+import MyOrderDetail from './containers/MyOrderDetail.js'
+import OnlineOrder from './containers/OnlineOrder.js'
+import Refund from './containers/Refund.js'
+import ChouJiang from './containers/ChouJiang.js'
+import SwitchShop from './containers/SwitchShop.js'
+import bargain from './containers/bargain.js'
+import LaunchBargain from './containers/LaunchBargain.js'
+import difference from './containers/Difference.js'
+import LinkCoupon from './containers/LinkCoupon.js'
 import NotFound from './containers/NotFound'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 
 ReactDOM.render(
   <Router history={browserHistory}>
-    <Route path="/login" component={Login}/>
-    <Route path="/shake-monitor" component={ShakeMonitor} />
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
-      <Route path="demo" component={Demo} />
-      <Route path="product" component={Product} />
-      <Route path="product/:id" component={Product} />
-      <Route path="global-config" component={GlobalConfig} />
-      <Route path="system-config" component={SystemConfig} />
-      <Route path="activity-config" component={ActivityConfig} />
-      <Route path="recharge-config" component={RechargeConfig} />
-      <Route path="recharge-config-new" component={RechargeConfigNew} />
-      <Route path="recharge-config-list" component={RechargeConfigList} />
-      <Route path="freight" component={Freight} />
-      <Route path="store-intro" component={StoreIntro} />
+      <Route path="detail/:id" component={Detail} />
+      <Route path="cart" component={Cart} />
+      <Route path="shake-monitor" component={ShakeMonitor} />
+      <Route path="member-center" component={MemberCenter} />
+      <Route path="boss-center" component={BossCenter} />
+      <Route path="member-card" component={MemberCard} />
+      <Route path="information" component={Information} />
+       <Route path="install" component={Install} />
+      <Route path="member-setting" component={MemberSetting} />
+      <Route path="member-setting1" component={MemberSetting1} />
+      <Route path="member-setting2" component={MemberSetting2} />
+      <Route path="forces" component={Forces} />
+      <Route path="recharge-list" component={RechargeList} />
+      <Route path="seller/recharge" component={Recharge} />
+      <Route path="unpay-order-list" component={UnpayOrderList} />
+      <Route path="phone-login" component={PhoneLogin} />
+      <Route path="store-info" component={StoreInfo} />
+      <Route path="order-list" component={OrderList} />
+      <Route path="all-product" component={AllProduct} />
+      <Route path="editaddr" component={EditAddr} />
+      <Route path="seller/payment" component={Payment} />
+      <Route path="seller/paymentAlipay" component={PaymentAlipay} />
       <Route path="lottery" component={Lottery} />
-      <Route path="birth-voucher" component={BirthVoucher} />
-      <Route path="user-list" component={UserList} />
-      <Route path="comment-list" component={CommentList} />
-      <Route path="fullCutShipping" component={FullCutShipping} />
-      <Route path="bindMemberSetting" component={BindMemberSetting} />
-      <Route path="evaluationConfiguration" component={EvaluationConfiguration} />
-      <Route path="integralinConfiguration" component={IntegralInConfiguration} />
-      <Route path="FullCut" component={FullCut} />
-      <Route path="user-unbuy-list" component={UserUnBuyList} />
-      <Route path="user-birth-list" component={UserBirthList} />
-      <Route path="quick-navi-product" component={QuickNaviProduct} />
-      <Route path="edit-quick-navi-product" component={EditQuickNaviProduct} />
-      <Route path="product-list" component={ProductList} />
-      <Route path="category-list" component={CategoryList} />
-      <Route path="banner-list" component={BannerList} />
-      <Route path="product-group-list" component={ProductGroupList} />
-      <Route path="quick-navi-list" component={QuickNaviList} />
-      <Route path="addStore" component={AddStore} />
-      <Route path="editCategory" component={EditCategory} />
-      <Route path="editStore" component={EditStore} />
-      <Route path="editBanner" component={EditBanner} />
-      <Route path="editQuickNavi" component={EditQuickNavi} />
-      <Route path="napaStoreList" component={NapaStoreList} />
-      <Route path="addUser" component={AddUser} />
-      <Route path="editPhoneUser" component={EditPhoneUser} />
-      <Route path="phoneUserList" component={PhoneUserList} />
-      <Route path="editProductGroup" component={EditProductGroup} />
-      <Route path="moduleSetting" component={ModuleSetting} />
-      <Route path="editModuleSetting" component={EditModuleSetting} />
-      <Route path="orderSettingPick" component={OrderSettingPick}/>
-      <Route path="auditRefund" component={AuditRefund} />
-      <Route path="auditRefundOrderDetail" component={AuditRefundOrderDetail} />
-      <Route path="auditRefundOrderDetail/:id" component={AuditRefundOrderDetail} />
-      <Route path="vip-list" component={VipList} />
-      <Route path= "voucher-delivery" component={VoucherDelivery} />
-      <Route path= "bargain-setting" component={BargainSetting} />
-      <Route path= "bargain-setting/:id" component={BargainSetting} />
-      <Route path= "bargain-list" component={BargainList} />
-      <Route path= "product-voucher-setting" component={ProductVoucherSetting} />
-      <Route path= "product-voucher-list" component={ProductVoucherList} />
-      <Route path= "edit-product-voucher-links" component={EditProductVoucherLinks} />
+      <Route path="distribution-center" component={DistributionCenter} />
+      <Route path="distribution-user" component={DistributionUser} />
+      <Route path="distribution-order" component={DistributionOrder} />
+      <Route path="comment" component={Comment} />
+      <Route path="commentDetail" component={CommentDetail} />
+      <Route path="address" component={Address} />
+      <Route path="coupon" component={Coupon} />
+      <Route path="order" component={Order} />
+      <Route path="storeList" component={StoreList} />
+      <Route path="dataView" component={DataView} />
+      <Route path="ShowCoupon" component={ShowCoupon} />
+      <Route path="SignIn" component={SignIn} />
+      <Route path="myOrderDetail/:id" component={MyOrderDetail} />
+      <Route path="OnlineOrder" component={OnlineOrder} />
+      <Route path="seller/refund" component={Refund}/>
+      <Route path="luck_draw" component={ChouJiang}/>
+      <Route path="switch-shop/:id" component={SwitchShop}/>
+      <Route path="bargain" component={bargain}/>
+      <Route path="launch-bargain/:valueId" component={LaunchBargain}/>
+      <Route path="difference" component={difference}/>
+      <Route path="link-coupon" component={LinkCoupon}/>
       <Route path="*" component={NotFound} />
     </Route>
   </Router>,

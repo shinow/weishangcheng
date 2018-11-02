@@ -14,26 +14,24 @@ module.exports = {
 	},
 	getCity :function(query,cb){
 		request
-			.get('/uclee-user-web/getCitiesByStr')
+			.get('/uclee-user-web/getCities')
 			.query(query)
 			.end(function(err, res) {
 				if (err) {
 					return err;
 				}
 				cb(JSON.parse(res.text));
-				console.log(res.text);
 			});
 	},
 	getRegion :function(query,cb){
 		request
-			.get('/uclee-user-web/getRegionsByStr')
+			.get('/uclee-user-web/getRegions')
 			.query(query)
 			.end(function(err, res) {
 				if (err) {
 					return err;
 				}
 				cb(JSON.parse(res.text));
-				console.log(res.text);
 			});
 	},
 	addAddr : function(data, cb) {

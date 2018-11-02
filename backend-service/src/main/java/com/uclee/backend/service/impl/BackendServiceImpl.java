@@ -51,6 +51,10 @@ public class BackendServiceImpl implements BackendServiceI {
 	@Autowired
 	private BindingRewardsMapper bindingRewardsMapper;
 	@Autowired
+	private SendCouponMapper sendCouponMapper;
+	@Autowired
+	private LinkCouponMapper linkCouponMapper;
+	@Autowired
 	private EvaluationGiftsMapper evaluationGiftsMapper;
 	@Autowired
 	private IntegralInGiftsMapper integralinGiftsMapper;
@@ -271,8 +275,15 @@ public class BackendServiceImpl implements BackendServiceI {
 			configMapper.updateByTag(WebConfig.voucherSendInformation, configPost.getVoucherSendInformation());
 		}else{
 			configMapper.updateByTag(WebConfig.voucherSendInformation, "");
+		}if(configPost.getVoucherSendInformation()!=null){
+			configMapper.updateByTag(WebConfig.whetherEnableAlipay, configPost.getWhetherEnableAlipay());
+		}else{
+			configMapper.updateByTag(WebConfig.whetherEnableAlipay, "");
+		}if(configPost.getVoucherSendInformation()!=null){
+			configMapper.updateByTag(WebConfig.linkCouponText, configPost.getLinkCouponText());
+		}else{
+			configMapper.updateByTag(WebConfig.linkCouponText, "");
 		}
-		
 		
 		return true;
 	}
@@ -430,6 +441,12 @@ public class BackendServiceImpl implements BackendServiceI {
 		if (configPost.getPerfectBirthText()!=null) {
 			configMapper.updateByTag(WebConfig.perfectBirthText, configPost.getPerfectBirthText());
 		}
+		if (configPost.getWhetherEnableAlipay()!=null) {
+			configMapper.updateByTag(WebConfig.whetherEnableAlipay, configPost.getWhetherEnableAlipay());
+		}
+		if (configPost.getLinkCouponText()!=null) {
+			configMapper.updateByTag(WebConfig.linkCouponText, configPost.getLinkCouponText());
+		}
 		return true;
 	}
 	@Override
@@ -582,6 +599,12 @@ public class BackendServiceImpl implements BackendServiceI {
 		}
 		if (configPost.getPerfectBirthText()!=null) {
 			configMapper.updateByTag(WebConfig.perfectBirthText, configPost.getPerfectBirthText());
+		}
+		if (configPost.getWhetherEnableAlipay()!=null) {
+			configMapper.updateByTag(WebConfig.whetherEnableAlipay, configPost.getWhetherEnableAlipay());
+		}
+		if (configPost.getLinkCouponText()!=null) {
+			configMapper.updateByTag(WebConfig.linkCouponText, configPost.getLinkCouponText());
 		}
 		return true;
 	}
@@ -862,6 +885,11 @@ public class BackendServiceImpl implements BackendServiceI {
 			productForm.setAppointedTime(product.getAppointedTime());
 			productForm.setShippingFree(product.getShippingFree());
 			productForm.setTitle(product.getTitle());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			if(product.getPickUpTime() != null && product.getPickEndTime() != null){
+				productForm.setPickUpTimes(sdf.format(product.getPickUpTime()));
+				productForm.setPickEndTimes(sdf.format(product.getPickEndTime()));
+			}
 			productForm.setDescription(FileUtil.UrlRequest(product.getDescription()));
 		}
 		ProductCategoryLinkKey link = productCategoryLinkMapper.selectByProductId(productId);
@@ -1106,6 +1134,10 @@ public class BackendServiceImpl implements BackendServiceI {
 				configPost.setNotice(config.getValue());
 			}else if(config.getTag().equals(WebConfig.perfectBirthText)){
 				configPost.setPerfectBirthText(config.getValue());
+			}else if(config.getTag().equals(WebConfig.whetherEnableAlipay)){
+				configPost.setWhetherEnableAlipay(config.getValue());
+			}else if(config.getTag().equals(WebConfig.linkCouponText)){
+				configPost.setLinkCouponText(config.getValue());
 			}
 		}
 		return configPost;
@@ -1755,10 +1787,10 @@ public class BackendServiceImpl implements BackendServiceI {
 	public Category getCategoryById(Integer categoryId) {
 		return categoryMapper.selectByPrimaryKey(categoryId);
 	}
-
+	
 	@Override
-	public List<Comment> getCommentList() {
-		List<Comment> comments = commentMapper.selectAll();
+	public List<Comment> getCommentList(Integer pn) {
+		List<Comment> comments = commentMapper.selectAll(pn);
 		for (Comment comment:comments){
 			Order order  = orderMapper.getOrderListByOrderSerailNum(comment.getOrderSerialNum());
 			comment.setOrder(order);
@@ -1991,5 +2023,62 @@ public class BackendServiceImpl implements BackendServiceI {
 	@Override
 	public int delCouponsProductsLinks(Integer vid, Integer pid) {
 		return productVoucherMapper.delCouponsProductsLinks(vid, pid);
+	}
+	@Override
+	public Double selectPageNum() {
+		return commentMapper.selectPageNum();
+	}
+	@Override
+	public List<SendCoupon> selectAllSendCoupon() {
+		return sendCouponMapper.selectOne();
+	}
+	
+	@Override
+	public boolean updateSendCoupon(FreightPost freightPost) {
+		int delAll = sendCouponMapper.deleteAll();
+		if(freightPost.getMyKey()==null||freightPost.getMyValue()==null||freightPost.getMyKey().size()==0||freightPost.getMyValue().size()==0||freightPost.getMyValue1()==null||freightPost.getMyValue1().size()==0){
+			return false;
+		}
+		for(Map.Entry<Integer, Double> entry : freightPost.getMyKey().entrySet()){
+			if(entry.getValue()==null||freightPost.getMyValue().get(entry.getKey())==null){
+				return false;
+			}
+		}
+		for(Map.Entry<Integer, Double> entry : freightPost.getMyKey().entrySet()){
+			SendCoupon sendCoupon = new SendCoupon();
+			sendCoupon.setMoney(new BigDecimal(entry.getValue().intValue()));
+			sendCoupon.setVoucher(freightPost.getMyValue().get(entry.getKey()));
+			sendCoupon.setAmount(Integer.parseInt(freightPost.getMyValue1().get(entry.getKey())));
+			sendCouponMapper.insertSelective(sendCoupon);
+		}
+		return true;
+	}
+	@Override
+	public boolean updateLinkCoupon(VipVoucherPost vipVoucherPost) {
+		linkCouponMapper.deleteAll();
+		System.out.println("wdew=========="+JSON.toJSONString(vipVoucherPost));
+		if(vipVoucherPost.getMyKey()==null||vipVoucherPost.getMyValue()==null||vipVoucherPost.getMyKey().size()==0||vipVoucherPost.getMyValue().size()==0||vipVoucherPost.getMyValue1()==null||vipVoucherPost.getMyValue1().size()==0){
+			return false;
+			
+		}
+		
+		for(Map.Entry<Integer, String> entry : vipVoucherPost.getMyKey().entrySet()){
+			if(entry.getValue()==null||vipVoucherPost.getMyValue().get(entry.getKey())==null){
+				return false;
+			}
+		}
+		for(Map.Entry<Integer, String> entry : vipVoucherPost.getMyKey().entrySet()){
+			LinkCoupon linkCoupon = new LinkCoupon();
+			linkCoupon.setVoucher(entry.getValue().toString());
+			linkCoupon.setAmount(Integer.parseInt(vipVoucherPost.getMyValue().get(entry.getKey())));
+			linkCoupon.setName(vipVoucherPost.getMyValue1().get(entry.getKey()));
+			linkCouponMapper.insertSelective(linkCoupon);
+		}
+		return true;
+	}
+	@Override
+	public List<LinkCoupon> selectAllLinkCoupon() {
+		
+		return linkCouponMapper.selectOne();
 	}
 }

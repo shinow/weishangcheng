@@ -1,0 +1,51 @@
+2018-10-27 10:47:00,273 - {dataSource-1} inited
+ 2018-10-27 10:47:01,013 - no bean
+ 2018-10-27 10:47:01,140 - {dataSource-2} inited
+ 2018-10-27 10:47:01,699 - no bean
+ 2018-10-27 10:47:01,817 - {dataSource-3} inited
+ 2018-10-27 10:47:31,522 - merchantCode:null
+ 2018-10-27 10:47:31,522 - merchantCode:hs
+ 2018-10-27 10:47:31,570 - merchantCode:null
+ 2018-10-27 10:48:09,755 - merchantCode:null
+ 2018-10-27 10:48:09,758 - merchantCode:null
+ 2018-10-27 10:48:10,273 - merchantCode:null
+ 2018-10-27 10:48:10,274 - merchantCode:null
+ 2018-10-27 10:48:10,277 - merchantCode:null
+ 2018-10-27 10:48:20,320 - merchantCode:null
+ 2018-10-27 10:48:20,320 - merchantCode:hs
+ 2018-10-27 10:48:23,337 - merchantCode:null
+ 2018-10-27 10:48:24,452 - merchantCode:null
+ 2018-10-27 10:49:10,368 - merchantCode:null
+ 2018-10-27 10:53:13,095 - {dataSource-1} inited
+ 2018-10-27 10:53:13,536 - merchantCode:null
+ 2018-10-27 10:53:13,785 - no bean
+ 2018-10-27 10:53:13,903 - {dataSource-2} inited
+ 2018-10-27 10:53:14,308 - no bean
+ 2018-10-27 10:53:14,521 - merchantCode:null
+ 2018-10-27 10:53:14,551 - {dataSource-3} inited
+ 2018-10-27 10:53:15,730 - merchantCode:null
+ 2018-10-27 10:59:57,271 - merchantCode:null
+ 2018-10-27 11:00:04,039 - merchantCode:null
+ 2018-10-27 11:00:04,750 - merchantCode:null
+ 2018-10-27 11:00:04,755 - merchantCode:null
+ 2018-10-27 11:00:04,760 - merchantCode:hs
+ 2018-10-27 11:00:49,149 - 微信公众号主动查询结果： {"nonce_str":"4kW5RddxPMiE4Fjl","appid":"wx68abe3fb2a71dcc7","sign":"8C86D2CF6EA9C51572536E941EA2BDED","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:01:49,516 - 微信公众号主动查询结果： {"nonce_str":"MobgsdErvyiWxjVM","appid":"wx68abe3fb2a71dcc7","sign":"D2A59BFF898D29597F23894A8E768694","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:02:49,864 - 微信公众号主动查询结果： {"nonce_str":"C6cvZzrvZjJK074m","appid":"wx68abe3fb2a71dcc7","sign":"DEA394178996EDE813BE041F829DE0D0","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:03:50,213 - 微信公众号主动查询结果： {"nonce_str":"gg9WZphvToSZBB3U","appid":"wx68abe3fb2a71dcc7","sign":"4D934F33AAC84E5A3C745E409A950411","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:04:50,631 - 微信公众号主动查询结果： {"nonce_str":"njVDb5tP4uV9ZIkL","appid":"wx68abe3fb2a71dcc7","sign":"91529958ADE63EC27A8EFE1A7EFD888B","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:05:50,980 - 微信公众号主动查询结果： {"nonce_str":"BL0cpMSNcST8bCHT","appid":"wx68abe3fb2a71dcc7","sign":"2DAD86F21B9DB269F9CD06BD133155DB","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:06:51,301 - 微信公众号主动查询结果： {"nonce_str":"ZoLiyH6rdruBvfFj","appid":"wx68abe3fb2a71dcc7","sign":"69D29513008E0D9FA4808F7B5C56AB20","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:07:51,635 - 微信公众号主动查询结果： {"nonce_str":"1JOE8YUAcQQLwx0Z","appid":"wx68abe3fb2a71dcc7","sign":"51F5B3D275E28C6C8B47FF2E2DB99E3C","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:08:27,992 - {"touser":"oH7hfuLOSzuTTwwtDzI1F2sD_ogA","template_id":"S3vfLhEEbVICFmwgpHedYUtlm7atyY3zl-GxJYY20ok","topcolor":"#FF0000","data":{"first":{"value":"尊敬的顾客，感谢您对本店的支持，您有一笔消费交易成功"},"keyword1":{"value":"171125-00018"},"keyword2":{"value":"2018-10-27 11:08:24"},"keyword3":{"value":"9.00元"},"keyword4":{"value":"会员余额支付--订单"},"remark":{"color":"#173177","value":"感谢您的惠顾，欢迎再次光临"}}}
+ 2018-10-27 11:08:51,971 - 微信公众号主动查询结果： {"nonce_str":"zYLe6A8COMdwd9mp","appid":"wx68abe3fb2a71dcc7","sign":"98FDCA99D897016CBC4CE8D3EFCE9400","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:09:52,436 - 微信公众号主动查询结果： {"nonce_str":"Brc0ojswx6ScdsaM","appid":"wx68abe3fb2a71dcc7","sign":"63B1D79F99DC6D9705B89337BF5F2445","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:09:57,981 - {"touser":"oH7hfuLOSzuTTwwtDzI1F2sD_ogA","template_id":"S3vfLhEEbVICFmwgpHedYUtlm7atyY3zl-GxJYY20ok","topcolor":"#FF0000","data":{"first":{"value":"尊敬的顾客，感谢您对本店的支持，您有一笔消费交易成功"},"keyword1":{"value":"171125-00019"},"keyword2":{"value":"2018-10-27 11:09:56"},"keyword3":{"value":"9.00元"},"keyword4":{"value":"会员余额支付--订单"},"remark":{"color":"#173177","value":"感谢您的惠顾，欢迎再次光临"}}}
+ 2018-10-27 11:10:52,732 - 微信公众号主动查询结果： {"nonce_str":"3sEfyiMiIjrxGn78","appid":"wx68abe3fb2a71dcc7","sign":"11103D069310025BD16E34E799CF2CAB","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:11:53,042 - 微信公众号主动查询结果： {"nonce_str":"HJAgSggxX63PTxKu","appid":"wx68abe3fb2a71dcc7","sign":"A8F045E4D436A4780F732CA3FBF19D84","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:12:53,321 - 微信公众号主动查询结果： {"nonce_str":"CRQOb299hxsdqQ4X","appid":"wx68abe3fb2a71dcc7","sign":"4F7D87EFDAD6D62B385FD7B7D5324DFD","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:13:43,781 - merchantCode:null
+ 2018-10-27 11:13:53,608 - 微信公众号主动查询结果： {"nonce_str":"rRwu3Dl2K4T5N9Tq","appid":"wx68abe3fb2a71dcc7","sign":"D74E0F8025B265049E5A9FFC362B5CDA","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:14:54,103 - 微信公众号主动查询结果： {"nonce_str":"wg3ijeMTu3hbtmxU","appid":"wx68abe3fb2a71dcc7","sign":"6CE14D399674C6410A4CEA29B0F8E132","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 2018-10-27 11:15:54,432 - 微信公众号主动查询结果： {"nonce_str":"tY3HMcsxeQ36YmPb","appid":"wx68abe3fb2a71dcc7","sign":"7E97F0CD66098E20811873167A927E9E","err_code":"ORDERNOTEXIST","return_msg":"OK","result_code":"FAIL","err_code_des":"order not exist","mch_id":"1253393501","return_code":"SUCCESS"}
+ 
