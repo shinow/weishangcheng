@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
@@ -131,14 +132,7 @@ public class WeiXinLogin extends CommonUserHandler{
        return source;  
     }
 
-	
-	/**
-	 *return
-	 *	key:result
-	 *		firstLoginSuccess    第一次登陆成功，跳转到绑定手机页面,没有手机号
-	 *		success				   登陆成功 
-	 *		fail  			                登陆失败
-	 */
+
 	/** 
 	* @Title: facebooklogin 
 	* @Description: 发起微信登陆请求
@@ -187,14 +181,15 @@ public class WeiXinLogin extends CommonUserHandler{
 			return result;
 		}
 		//根据微信回掉的code 获取openId
-		logger.info("微信回掉的code 是"+ code);
+		System.out.println("微信回掉的code 是"+ code);
 		OAuthService service = weixinServiceProvider.getService();
 		Token accessToken = service.getAccessToken(null, new Verifier(code));
+		System.out.println("获取的  accessToken 是"+JSON.parse(accessToken.getRawResponse()));
 		Object accessTokenObject = JSON.parse(accessToken.getRawResponse());
 		JSONObject jsonObject = JSON.parseObject(accessToken.getRawResponse());  
 		String openid=jsonObject.getString("openid");
 		
-		logger.info("获取的  opendId 是"+openid);
+		System.out.println("获取的  opendId 是"+openid);
 		if(StringUtils.isEmpty(openid)){
 			logger.info("获取 openId  失败 ,授权 失败,get 到的信息为：\n"+JSON.toJSONString(accessTokenObject));
 			System.out.println("获取 openId  失败 ,授权 失败,get 到的信息为：\n"+JSON.toJSONString(accessTokenObject));
@@ -202,10 +197,10 @@ public class WeiXinLogin extends CommonUserHandler{
 			return result;
 		}
 		long b = System.currentTimeMillis();
-		logger.info("b-a: " + (b-a));
+		System.out.println("b-a: " + (b-a));
 		//通过 openId  检查是否是第一次使用 微信登陆
 		OauthLogin oauthLogin = userService.getOauthLoginInfoByOauthId(openid);
-		
+		System.out.println("通过 openId  检查是否是第一次使用 微信登陆"+JSON.toJSON(oauthLogin));
 		if(oauthLogin != null ){
 			UserProfile userProfile = userProfileServiceI.getUserProfileByUserId(oauthLogin.getUserId());
 			User user = userService.getUserById(oauthLogin.getUserId());
@@ -215,11 +210,11 @@ public class WeiXinLogin extends CommonUserHandler{
 			//获取微信用户的name 作为account
 			String weiXinUserInfo = userService.getWeiXinUserInfo(var.getValue(), openid);
 			JSONObject weiXinUserInfoJsonData = JSON.parseObject(weiXinUserInfo);
-			logger.info(weiXinUserInfo);
+			System.out.println(weiXinUserInfo);
 			String headimgurl="";
 			String weiXinNickName = "";
 			String errcode = weiXinUserInfoJsonData.getString("errcode");
-			logger.info("erroCode: " + errcode);
+			System.out.println("erroCode: " + errcode);
 			if(errcode!=null){
 				duobaoService.getGolbalAccessToken();
 				var = varMapper.selectByPrimaryKey(new Integer(1));
@@ -228,14 +223,14 @@ public class WeiXinLogin extends CommonUserHandler{
 				weiXinUserInfoJsonData = JSON.parseObject(weiXinUserInfo);
 			}
 			long c = System.currentTimeMillis();
-			logger.info("c-b: " + (c-b));
+			System.out.println("c-b: " + (c-b));
 			String isSubcribe = weiXinUserInfoJsonData.getString("subscribe");
 			if (isSubcribe!=null&&isSubcribe.equals("1")) {
 				weiXinNickName = EmojiFilter.filterEmoji(weiXinUserInfoJsonData.getString("nickname"));
 				//headimgurl = headimgurl.replaceAll("\\", "");
-				logger.info(weiXinNickName);
+				System.out.println(weiXinNickName);
 				if (Strings.isNullOrEmpty(weiXinNickName)) {
-					logger.info("获取微信用户名失败");
+					System.out.println("获取微信用户名失败");
 					result.setResult(false);
 					return result;
 				}

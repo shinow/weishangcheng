@@ -53,12 +53,21 @@ const DetailInfo = (props) => {
       </div>
       <div className="detail-info-price-rprice">
         {
-         	<span>¥ {(Date1>props.endtime) ? props.minPrice : props.proMinPrice < props.minPrice ? props.proMinPrice : props.minPrice} - {props.maxPrice}</span>
+         	<span>¥ {(Date1>props.endtime) ? 
+         		props.minPrice 
+         		: 
+         		props.proMinPrice < props.minPrice ? 
+         		(props.proMinVipPriceprops < props.proMinPrice ? 
+         			props.proMinVipPriceprops :props.proMinPrice) 
+         			: props.proMinVipPriceprops < props.minPrice ?
+         				props.proMinVipPriceprops 
+         				: props.minPrice} - {props.maxPrice}
+         	</span>
         }         
       </div>
       </div>
       <div className="detail-info-stat">
-        <div className="detail-info-stat-item">{props.shippingFree?<span className="tag">免运费</span>:null}<span style={{float:'right'}}>销量：{props.salesAmount}</span></div>
+        <div className="detail-info-stat-item">{props.shippingFree?<span className="tag">免运费</span>:null} {props.frequency!==-1 && props.frequency!==null ? <span className="tag">限购{props.frequency}个</span> : null}<span style={{float:'right'}}>销量：{props.salesAmount}</span></div>
       </div>
     </div>
     )
@@ -176,10 +185,13 @@ const DetailPicker = (props) => {
             <div className="detail-picker-header-info">
               <div className="detail-picker-header-title">{props.title}</div>
               <div className="detail-picker-header-price">
+              <div>
+              	{props.vipPrice !== '-' ? "会员价：¥"+props.vipPrice : null}
+              </div>
               {
               	((Date1)<(props.startTime)||(Date1)>(props.endTime)) ?
               <div>
-              在售价：¥{props.totalPrice} {props.prePirce>0?<span className='pre'>原价：¥{props.prePirce}</span>:null}
+             		 在售价：¥{props.totalPrice} {props.prePirce>0?<span className='pre'>原价：¥{props.prePirce}</span>:null}
               </div>	
               	: 
               <div>
@@ -306,8 +318,11 @@ class Detail extends React.Component {
       parameters:[],
       title: null,
       numbers: '',
+      pickUpTime: '',
+      pickEndTime:'',
       parameter: '',
       explain: null,
+      frequency:-1,
       appointedTime: 0,
       shippingFree:false,
       loading: true,
@@ -329,6 +344,8 @@ class Detail extends React.Component {
     this.specPreValueMap = {}
     this.specProPriceMap = {}
     this.specProValueMap = {}
+    this.specVipPriceMap = {}
+    this.specVipValueMap = {}
     this.specStartTimeMap = {}
     this.specStaValueMap = {}
     this.specEndTimeMap = {}
@@ -339,6 +356,9 @@ class Detail extends React.Component {
     this.preMaxPrice = 0
     this.proMinPrice = 0
     this.proMaxPrice = 0
+    this.proMaxVipPrice = 0
+    this.proMinVipPrice = 0
+    this.starttime = 0
     this.endtime = 0
   }
 
@@ -449,6 +469,11 @@ class Detail extends React.Component {
         	this.specProValueMap[`_${item.valueId}`] = item.value
         	return item.promotionPrice
         })
+        var vipPrice = spec.values.map((item) =>{
+        	this.specVipPriceMap[`_${item.valueId}`] = item.vipPrice
+        	this.specVipValueMap[`_${item.valueId}`] = item.value
+        	return item.vipPrice
+        })
         var startTime = spec.values.map((item) =>{
         	this.specStartTimeMap[`_${item.valueId}`] = item.startTime
         	this.specStaValueMap[`_${item.valueId}`] = item.value
@@ -465,7 +490,10 @@ class Detail extends React.Component {
         this.preMaxPrice = Math.max.apply(null, prePrices)
         this.proMinPrice = Math.min.apply(null, promotionPrice)
         this.proMaxPrice = Math.max.apply(null, promotionPrice)
+        this.proMinVipPrice = Math.min.apply(null, vipPrice)
+        this.proMaxVipPrice = Math.max.apply(null, vipPrice)
         this.endtime = endTime
+        this.starttime = startTime
         console.log(prePrices)
     }
 
@@ -480,6 +508,10 @@ class Detail extends React.Component {
     var promotionPrice='-'
     if (this.specProPriceMap[`_${this.state.currentSpecValudId}`]) {
       promotionPrice = new Big(this.specProPriceMap[`_${this.state.currentSpecValudId}`]).toString()
+    }
+    var vipPrice='-'
+    if (this.specVipPriceMap[`_${this.state.currentSpecValudId}`]) {
+      vipPrice = new Big(this.specVipPriceMap[`_${this.state.currentSpecValudId}`]).toString()
     }
 		var startTime='00:00'
     if (this.specStartTimeMap[`_${this.state.currentSpecValudId}`]) {
@@ -502,6 +534,7 @@ class Detail extends React.Component {
               appointedTime={this.state.appointedTime}
               explain={this.state.explain}
               shippingFree={this.state.shippingFree}
+              frequency={this.state.frequency}
               salesAmount={this.state.salesAmount}
               minPrice={this.minPrice}
               maxPrice={this.maxPrice}
@@ -509,6 +542,9 @@ class Detail extends React.Component {
               preMaxPrice={this.preMaxPrice}
               proMinPrice={this.proMinPrice}
               proMaxPrice={this.proMaxPrice}
+              proMinVipPrice={this.proMinVipPrice}
+              proMaxVipPrice={this.proMaxVipPrice}
+              starttime={this.starttime}
               endtime={this.endtime}/>
               {
                 this.state.salesInfo.length>=1?
@@ -545,6 +581,7 @@ class Detail extends React.Component {
               pickType={this.state.pickType}
               prePirce={prePirce}
               promotionPrice={promotionPrice}
+              vipPrice={vipPrice}
               startTime = {startTime}
               endTime = {endTime}
               canshu = {canshu}
@@ -668,7 +705,7 @@ class Detail extends React.Component {
         }
         var result = JSON.parse(res.text);
         if(result.result){
-          window.location = '/cart'
+          window.location = '/cart?merchantCode='+localStorage.getItem('merchantCode')
         }else{
           alert(result.reason);
         }

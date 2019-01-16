@@ -8,7 +8,7 @@ function authURL(u, appId) {
     appId +
     '&redirect_uri=' +
     encodeURIComponent(u) +
-    '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'
+    '&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect'
   )
 }
 
@@ -47,16 +47,12 @@ class App extends Component {
           return err
         }
 
+
         this._sendMerchantCode((err, res) => {
-          if (err) {
-            alert('商户信息不正确，请重新从公众号打开')
-            return err
-          }
-
-          /*if (!this.state.loading) {
-            return
-          }*/
-
+					if (err) {
+		        alert('商户信息不正确，请重新从公众号打开')
+		        return err
+        	}
           // 有 code 访问 callback
           if (q.code) {
             this._wxCallback(() => {
@@ -156,13 +152,12 @@ class App extends Component {
 
     return (
       <div className="app">
+      	{showStoreBar ? <StoreBar /> : null}
         {this.state.loading
           ?	<div className="center">
-
+          		loading...
           	</div>
           : <div className="main">
-              {showStoreBar ? <StoreBar /> : null}
-
               {this.props.children}
             </div>}
       </div>

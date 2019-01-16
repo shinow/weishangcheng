@@ -22,6 +22,7 @@ class Cart extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+    	cVipCode: null,
       loading: true,
       list: [],
       editMode: false,
@@ -30,6 +31,7 @@ class Cart extends React.Component {
   }
 
   componentDidMount() {
+  	
     req
       .get('/uclee-user-web/cart')
       .query({
@@ -51,6 +53,17 @@ class Cart extends React.Component {
           })
         })
       })
+      req
+      .get('/uclee-user-web/verificationVip')
+      .end((err, res) => {
+        if (err) {
+          return err
+        }
+        this.setState({
+          result: res.body.result
+        })
+      })
+      
   }
 
   render() {
@@ -72,12 +85,23 @@ class Cart extends React.Component {
         		(
         			localStorage.getItem('bargainPrice') ===null
         			? 
-        			totalPrice.add(Big(item.money).times(Big(item.amount)))
+        			(
+        				this.state.result === true && item.vip !== null
+        				?
+        					totalPrice.add(Big(item.vip).times(Big(item.amount)))
+        				:
+        					totalPrice.add(Big(item.money).times(Big(item.amount)))	
+        			)
         			:
         			totalPrice.add(Big(localStorage.getItem('bargainPrice')).times(Big(item.amount)))
         		)
         	:
-        	totalPrice.add(Big(item.promotion).times(Big(item.amount)))
+        	(
+        		this.state.result === true && item.vip !== null && item.vip < item.promotion ?
+        			totalPrice.add(Big(item.vip).times(Big(item.amount)))
+        		:
+        			totalPrice.add(Big(item.promotion).times(Big(item.amount)))
+        	)
         	)
       }
     })
@@ -170,16 +194,17 @@ class Cart extends React.Component {
                                   }
                                 })
                               }}> 
-                    						{
-            	        						Date1 < item.startTime || Date1 > item.endTime || item.promotion === null ?
-                      						<div>
-                      							{localStorage.getItem('bargainPrice') ===null ?	'在售价¥ ' + item.money : '购买价¥ ' + localStorage.getItem('bargainPrice')}
-                     							</div>	
-              	     							: 
-                     							<div>
-                      							{'促销价¥ ' + item.promotion}
-                     							 </div>
-                    						} 
+                            {
+        	        						Date1 <  item.startTime || Date1 > item.endTime || item.promotion === null ?
+                  						<div>
+                  							{localStorage.getItem('bargainPrice') ===null ?	'在售价¥ ' + item.money : '购买价¥ ' + localStorage.getItem('bargainPrice')}
+                 							</div>	
+          	     							: 
+                 							<div>
+                  							促销价¥ {item.promotion}<br />
+                 							 </div>
+                    				} 
+                    				{item.vip !== null ? '会员价¥ '+item.vip : null}
                               </div>
                               {this.state.editMode
                                 ? null
@@ -225,7 +250,7 @@ class Cart extends React.Component {
                       					</div>
                       					<div className="cart-item-info">
                         					<div className="cart-item-title">
-                          					{item.title}
+                          					{item.title}  
                         					</div>
                         					<div className="cart-item-spec">
                           					{item.specification}<br />

@@ -44,6 +44,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.h2.util.StringUtils;
@@ -75,6 +76,7 @@ import com.uclee.fundation.data.web.dto.CartDto;
 import com.uclee.fundation.data.web.dto.OrderPost;
 import com.uclee.fundation.data.web.dto.ProductDto;
 import com.uclee.fundation.data.web.dto.ProductVoucherPost;
+import com.uclee.fundation.data.web.dto.Stock;
 import com.uclee.fundation.data.web.dto.StockPost;
 import com.uclee.fundation.dfs.fastdfs.FDFSFileUpload;
 import com.uclee.hongshi.service.HongShiVipServiceI;
@@ -215,6 +217,8 @@ public class UserServiceImpl implements UserServiceI {
 	private FullCutMapper fullCutMapper;
 	@Autowired
 	private ShippingFullCutMapper shippingFullCutMapper;
+	@Autowired
+	private MarketingEntranceMapper marketingEntranceMapper;
 	@Autowired
 	private ProductsSpecificationsValuesLinkMapper productsSpecificationsValuesLinkMapper;
 	@Autowired
@@ -1749,6 +1753,15 @@ public class UserServiceImpl implements UserServiceI {
 					createOrderItem.setTotalAmount(item.getPrice().multiply(new BigDecimal(item.getAmount())));
 					System.out.println("订单明细： " + JSON.toJSONString(createOrderItem));
 					hongShiMapper.createOrderItem(createOrderItem);
+					//记录限购产品购买次数
+					Product product= productMapper.selectByPrimaryKey(item.getProductId());
+					if(product.getFrequency()!=null && product.getFrequency()!=-1){
+						UserLimit userLimit = new UserLimit();
+						userLimit.setUserId(order.getUserId());
+						userLimit.setTime(new Date());
+						userLimit.setProductId(item.getProductId());
+						productMapper.insertUserLimit(userLimit);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1818,12 +1831,7 @@ public class UserServiceImpl implements UserServiceI {
 						//判断可用优惠券，是否已经发光了
 						if(coupon!=null && !coupon.isEmpty()) {
 							if(coupon != null && coupon.size()>0) {
-								int a= hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(0).getVouchersCode(), pv.getVoucher(), "购指定产品赠送礼券");
-								if(a>0){
-									System.out.println("发送成功");
-								}else{
-									System.out.println("发送失败");
-								}
+								hongShiMapper.saleVoucher(pv.getVoucher(), coupon.get(0).getVouchersCode(),oauthLogin.getOauthId(), "购指定产品赠送礼券");
 							}
 						}else {
 							System.out.println("券被抢光了");
@@ -1903,7 +1911,7 @@ public class UserServiceImpl implements UserServiceI {
 							List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByGoodsCode(rechargeConfig.getVoucherCode());
 							if (coupon != null && coupon.size() > 0) {
 								try {
-									hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(0).getVouchersCode(), rechargeConfig.getVoucherCode(),"充值赠送礼券");
+									hongShiMapper.saleVoucher(rechargeConfig.getVoucherCode(), coupon.get(0).getVouchersCode(), oauthLogin.getOauthId(), "充值赠送礼券");
 									isSend=true;
 								} catch (Exception e) {
 
@@ -1914,7 +1922,7 @@ public class UserServiceImpl implements UserServiceI {
 							List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByGoodsCode(rechargeConfig.getVoucherCodeSecond());
 							if (coupon != null && coupon.size() > 0) {
 								try {
-									hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(0).getVouchersCode(), rechargeConfig.getVoucherCodeSecond(),"充值赠送礼券");
+									hongShiMapper.saleVoucher(rechargeConfig.getVoucherCodeSecond(), coupon.get(0).getVouchersCode(), oauthLogin.getOauthId(), "充值赠送礼券");
 									isSend=true;
 								} catch (Exception e) {
 
@@ -1925,7 +1933,7 @@ public class UserServiceImpl implements UserServiceI {
 							List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByGoodsCode(rechargeConfig.getVoucherCodeThird());
 							if (coupon != null && coupon.size() > 0) {
 								try {
-									hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(0).getVouchersCode(), rechargeConfig.getVoucherCodeThird(),"充值赠送礼券");
+									hongShiMapper.saleVoucher(rechargeConfig.getVoucherCodeThird(),  coupon.get(0).getVouchersCode(), oauthLogin.getOauthId(), "充值赠送礼券");
 									isSend=true;
 								} catch (Exception e) {
 
@@ -2196,6 +2204,7 @@ public class UserServiceImpl implements UserServiceI {
 				Specification specification = specificationMapper.selectByPrimaryKey(specificationValue.getSpecificationId());
 				cart.setMoney(specificationValue.getHsGoodsPrice());
 				cart.setPromotion(specificationValue.getPromotionPrice());
+				cart.setVip(specificationValue.getVipPrice());
 				cart.setStartTime(specificationValue.getStartTime());
 				cart.setEndTime(specificationValue.getEndTime());
 				if(specification!=null){
@@ -2373,6 +2382,7 @@ public class UserServiceImpl implements UserServiceI {
 	* @param @return    设定文件  
 	* @throws 
 	*/
+	@SuppressWarnings("unused")
 	@Override
 	public Map<String, Object> orderHandler(OrderPost orderPost, Integer userId, String OrderSerialNum) {
 		Map<String,Object> map = new TreeMap<String,Object>();
@@ -2438,8 +2448,18 @@ public class UserServiceImpl implements UserServiceI {
 				return map;
 			}
 			Product product = productMapper.selectByPrimaryKey(cart.getProductId());
-			SpecificationValue value = specificationValueMapper.selectByPrimaryKey(cart.getSpecificationValueId());
 			BargainSetting price = bargainSettingMapper.getPrice(cart.getCartId());
+			if(price == null){
+				if(product.getFrequency()!=null && product.getFrequency()!=-1) {
+					List<UserLimit> limit = productMapper.selectByLimit(userId, product.getProductId());
+					if(limit.size() >= product.getFrequency()) {
+						map.put("result", false);
+						map.put("reason", product.getTitle()+"仅限购买"+product.getFrequency()+"次，请返回购物车重新提交");
+						return map;
+					}
+				}
+			}
+			SpecificationValue value = specificationValueMapper.selectByPrimaryKey(cart.getSpecificationValueId());
 			ProductParameters csshuxing1 = productMapper.obtainParameters(cart.getCanshuValueId());
 			if(value==null){
 				map.put("result", false);
@@ -2447,24 +2467,24 @@ public class UserServiceImpl implements UserServiceI {
 				return map;
 			}
 			//TODO 改成购物车失效
-			if(product==null){
+			if(product==null) {
 				map.put("result", false);
 				map.put("reason", value.getValue() + "已被删除，请重新加入购物车");
 				return map;
 			}
-			if(cart.getAmount()>value.getHsStock()){
+			if(cart.getAmount()>value.getHsStock()) {
 				map.put("result", false);
 				map.put("reason", product.getTitle() + "库存不足,剩余库存为：" + value.getHsStock());
 				return map;
 			}
 			SpecificationValueStoreLink link = specificationValueStoreLinkMapper.selectByValueAndStoreId(value.getValueId(),orderPost.getStoreId());
-			if(link==null){
+			if(link==null) {
 				map.put("result", false);
 				map.put("reason", "非法数据，请返回购物车重新提交");
 				return map;
 			}
 			//拼接备注插入产品的规格口味
-			if(csshuxing1!=null&&csshuxing1.getSname()!=null){
+			if(csshuxing1!=null&&csshuxing1.getSname()!=null) {
 				a=a+"款式："+value.getValue()+"("+csshuxing1.getSname()+")"+",";
 			}
 			
@@ -2477,12 +2497,22 @@ public class UserServiceImpl implements UserServiceI {
 			item.setItemSerialNum(NumberUtil.generateSerialNum());
 			Date date = new Date();
 			long value0 = date.getTime();
+			OauthLogin login = oauthLoginMapper.selectByUserId(userId);
+			List<HongShiVip> ret = null;
+			if(login!=null){
+				ret = hongShiVipService.getVipInfo(login.getOauthId());
+			}
 			//判断是否有促销价
-			if(value.getPromotionPrice()!=null&&value.getEndTime()!=null&&value.getStartTime()!=null){
+			if(value.getPromotionPrice()!=null&&value.getEndTime()!=null&&value.getStartTime()!=null) {
 				long value1=value.getStartTime().getTime();
 				long value2=value.getEndTime().getTime();
 				if(value.getPromotionPrice()!=null&&value0>value1&&value0<value2){
-					item.setPrice(value.getPromotionPrice());
+					if(ret.size()>0 && value.getVipPrice()!=null && value.getVipPrice().compareTo(value.getPromotionPrice()) == -1){
+						item.setPrice(value.getVipPrice());
+					}else{
+						item.setPrice(value.getPromotionPrice());
+				}
+					
 				}else{
 					//判断产品是否参与了砍价
 					if(price==null){
@@ -2491,20 +2521,34 @@ public class UserServiceImpl implements UserServiceI {
 						item.setPrice(price.getPrice());	
 					}
 				}
+				//产品有促销价修改产品单价
 				if(value.getPromotionPrice()!=null&&value0>value1&&value0<value2){
-					item.setPrice(value.getPromotionPrice());
+					if(ret.size()>0 && value.getVipPrice()!=null && value.getVipPrice().compareTo(value.getPromotionPrice()) == -1){
+						item.setPrice(value.getVipPrice());
+					}else{
+						item.setPrice(value.getPromotionPrice());
+					}
 				}else{
 					//判断产品是否参与了砍价
 					if(price==null){
-						item.setPrice(value.getHsGoodsPrice());
+						if(ret.size()>0 && value.getVipPrice()!=null){
+							item.setPrice(value.getVipPrice());
+						}else{
+							item.setPrice(value.getHsGoodsPrice());
+						}
 					}else{
+
 						item.setPrice(price.getPrice());	
 					}
 				}
 			}else{
 				//判断产品是否参与了砍价
 				if(price==null){
-					item.setPrice(value.getHsGoodsPrice());
+					if(ret.size()>0 && value.getVipPrice()!=null){
+						item.setPrice(value.getVipPrice());
+					}else{
+						item.setPrice(value.getHsGoodsPrice());
+					}
 				}else{
 					item.setPrice(price.getPrice());	
 				}
@@ -2512,7 +2556,7 @@ public class UserServiceImpl implements UserServiceI {
 			item.setProductId(cart.getProductId());
 			item.setStoreId(orderPost.getStoreId());
 			ProductImageLink productImageLink = productImageLinkMapper.selectByProductIdLimit(cart.getProductId());
-			if(productImageLink!=null){
+			if(productImageLink!=null) {
 				item.setImageUrl(productImageLink.getImageUrl());
 			}
 			if(value.getPromotionPrice()!=null&&value.getEndTime()!=null&&value.getStartTime()!=null){
@@ -2520,17 +2564,35 @@ public class UserServiceImpl implements UserServiceI {
 				long value2=value.getEndTime().getTime();
 				//判断是否是带促销价的商品总价
 				if(value.getPromotionPrice()!=null&&value0>value1&&value0<value2){
-					totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getPromotionPrice()));
+					if(ret.size()>0 && value.getVipPrice()!=null && value.getVipPrice().compareTo(value.getPromotionPrice()) == -1){
+						totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getVipPrice()));
+					}else{
+						totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getPromotionPrice()));
+					}
 				}else{
 					//判断产品是否参与了砍价
 					if(price==null){
-						totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getHsGoodsPrice()));
+						if(ret.size()>0 && value.getVipPrice()!=null && value.getVipPrice().compareTo(value.getPromotionPrice()) == -1){
+							totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getVipPrice()));
+						}else{
+							totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getHsGoodsPrice()));
+						}	
 					}else{
 						totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(price.getPrice()));
 					}
 				}
 			}else{
-				totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getHsGoodsPrice()));
+				if(ret.size()>0 && value.getVipPrice()!=null){
+					totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getVipPrice()));
+				}else{
+					if(price==null){
+						totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(value.getHsGoodsPrice()));
+					}else{
+						totalMoney = totalMoney.add(new BigDecimal(cart.getAmount()).multiply(price.getPrice()));
+						System.out.println("我是4==="+totalMoney);
+					}
+					
+				}	
 			}
 			//记录销量
 			try {
@@ -2568,6 +2630,7 @@ public class UserServiceImpl implements UserServiceI {
 		if(orderPost.getIsSelfPick()!=null&&orderPost.getIsSelfPick().equals("false")){
 			order.setShippingCost(orderPost.getShippingFee());
 			totalMoney = totalMoney.add(orderPost.getShippingFee());
+			System.out.println("我是3==="+totalMoney);
 		}
 		//洪石礼券减免
 		if(orderPost.getVoucherCode()!=null){
@@ -2581,6 +2644,7 @@ public class UserServiceImpl implements UserServiceI {
 					}
 					order.setVoucherCode(orderPost.getVoucherCode());
 					totalMoney = totalMoney.subtract(coupon.get(0).getPayQuota());
+					System.out.println("我是2==="+totalMoney);
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -2593,6 +2657,7 @@ public class UserServiceImpl implements UserServiceI {
 		//创建支付单
 		PaymentOrder paymentOrder = new PaymentOrder();
 		if(totalMoney.compareTo(new BigDecimal(0))>0){
+			System.out.println("我是1==="+totalMoney);
 			paymentOrder.setMoney(totalMoney);
 		}else{
 			paymentOrder.setMoney(new BigDecimal(0));
@@ -2732,32 +2797,39 @@ public class UserServiceImpl implements UserServiceI {
 			List<ProductDto> products = new ArrayList<ProductDto>();
 			List<ProductGroupLink> links  = productGroupLinkMapper.selectByGroupId(group.getGroupId());
 			for(ProductGroupLink link : links){
-				ProductDto productDto = productMapper.getProductById(link.getProductId());
+				ProductDto productDto = productMapper.getProductById(link.getProductId());				
 				if(productDto!=null){
-					ProductImageLink productImageLink = productImageLinkMapper.selectByProductIdLimit(link.getProductId());
-					if(productImageLink!=null){
-						productDto.setImage(productImageLink.getImageUrl());
-					}
-					SpecificationValue value = specificationValueMapper.selectByProductIdLimit(link.getProductId());
-					if(value!=null){
-						productDto.setPrice(value.getHsGoodsPrice());
-					}
-					List<ProductImageLink> images = productImageLinkMapper.selectByProductId(productDto.getProductId());
-					productDto.setImages(images);
-					List<Specification> specifications = specificationMapper.getByProductId(productDto.getProductId());
-					productDto.setSpecifications(specifications);
-					if(specifications!=null&&specifications.size()>0){
-						if(specifications.get(0).getValues()!=null&&specifications.get(0).getValues().size()==1){
-							if(specifications.get(0).getValues().get(0)!=null){
-								productDto.setCurrentSpecValudId(specifications.get(0).getValues().get(0).getValueId());
+					if(new Date().compareTo(productDto.getShelfTime())<0 || new Date().compareTo(productDto.getDownTime())>0) 
+					{
+						System.out.println(productDto.getTitle()+"不在上架时间范围内");
+					}else{
+						ProductImageLink productImageLink = productImageLinkMapper.selectByProductIdLimit(link.getProductId());
+						if(productImageLink!=null){
+							productDto.setImage(productImageLink.getImageUrl());
+						}
+						SpecificationValue value = specificationValueMapper.selectByProductIdLimit(link.getProductId());
+						if(value!=null){
+							productDto.setPrice(value.getHsGoodsPrice());
+							productDto.setVipPrice(value.getVipPrice());
+							productDto.setPrePrice(value.getPrePrice());
+						}
+						List<ProductImageLink> images = productImageLinkMapper.selectByProductId(productDto.getProductId());
+						productDto.setImages(images);
+						List<Specification> specifications = specificationMapper.getByProductId(productDto.getProductId());
+						productDto.setSpecifications(specifications);
+						if(specifications!=null&&specifications.size()>0){
+							if(specifications.get(0).getValues()!=null&&specifications.get(0).getValues().size()==1){
+								if(specifications.get(0).getValues().get(0)!=null){
+									productDto.setCurrentSpecValudId(specifications.get(0).getValues().get(0).getValueId());
+								}else{
+									productDto.setCurrentSpecValudId(null);
+								}
 							}else{
 								productDto.setCurrentSpecValudId(null);
 							}
-						}else{
-							productDto.setCurrentSpecValudId(null);
 						}
-					}
-					products.add(productDto);
+						products.add(productDto);
+					}					
 				}
 			}
 			group.setProducts(products);	
@@ -2803,6 +2875,7 @@ public class UserServiceImpl implements UserServiceI {
 					specifcationStr = specifcationStr + "" + specificationValue.getValue();
 					tmp.setMoney(specificationValue.getHsGoodsPrice());
 					tmp.setPromotion(specificationValue.getPromotionPrice());
+					tmp.setVip(specificationValue.getVipPrice());
 					tmp.setStartTime(specificationValue.getStartTime());
 					tmp.setEndTime(specificationValue.getEndTime());
 					tmp.setSpecification(specifcationStr);
@@ -2902,6 +2975,11 @@ public class UserServiceImpl implements UserServiceI {
 						}
 					}
 					item.setHongShiGoods(goods);
+					OauthLogin login = oauthLoginMapper.selectByUserId(userId);
+					List<HongShiVip> ret = null;
+					if(login!=null){
+						ret = hongShiVipService.getVipInfo(login.getOauthId());
+					}
 					total = total.add(new BigDecimal(item.getPrice()).multiply(new BigDecimal(item.getCount())));
 				}
 				Comment comment = commentMapper.selectByOrderId(order.getOuterOrderCode());
@@ -2913,16 +2991,7 @@ public class UserServiceImpl implements UserServiceI {
 				Order tmp = orderMapper.selectBySerialNum(order.getOuterOrderCode());
 				order.setOrderItems(orderItems);
 				if(tmp!=null){
-					/*if(tmp.getVoucherCode()!=null&&!tmp.getVoucherCode().equals("")){
-						try {
-							List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByCode(tmp.getVoucherCode());
-							if(coupon!=null&&coupon.size()>0){
-								discount = coupon.get(0).getPayQuota();
-							}else{
-							}
-						} catch (Exception e) {
-						}
-					}*/
+
 					discount = tmp.getVoucherPrice();
 					order.setShippingCost(tmp.getShippingCost());
 					order.setIsSelfPick(tmp.getIsSelfPick());
@@ -3027,15 +3096,12 @@ public class UserServiceImpl implements UserServiceI {
 	public Map<String,Object> signInHandler(Integer userId) {
 		Map<String,Object> map = new TreeMap<String,Object>();
 		Date today = DateUtils.parse(DateUtils.format(new Date(), DateUtils.FORMAT_SHORT), DateUtils.FORMAT_SHORT);
-		logger.info("today================="+today);
 		SignRecord existed = signRecordMapper.selectToday(userId,today);
-		logger.info("existed================="+existed);
 		if(existed!=null){
 			map.put("existed", true);
 			return map;
 		}
 		SignRecord record = new SignRecord();
-		logger.info("record============="+JSON.toJSONString(record));
 		Config config = configMapper.getByTag(WebConfig.signInPoint);
 		record.setUserId(userId);
 		try {
@@ -3064,7 +3130,6 @@ public class UserServiceImpl implements UserServiceI {
 			map.put("result", false);
 			return map;
 		}
-		logger.info("record22============="+JSON.toJSONString(record));
 		if(signRecordMapper.insertSelective(record)>0){
 			//同步积分到洪石系统
 			OauthLogin oauthLogin = oauthLoginMapper.selectByUserId(userId);
@@ -3211,6 +3276,7 @@ public class UserServiceImpl implements UserServiceI {
 			OauthLogin oauthLogin = oauthLoginMapper.selectByUserId(paymentOrder.getUserId());
 			//更新订单状态
 			List<Order> orders = this.selectOrderByPaymentSerialNum(paymentOrder.getUserId(), paymentOrder.getPaymentSerialNum());
+			System.out.println("orders9999========="+orders.size());
 			for(Order order:orders){
 
 				//调用存储过程插入洪石订单
@@ -3275,7 +3341,7 @@ public class UserServiceImpl implements UserServiceI {
 								if(coupon!=null && !coupon.isEmpty()){
 									if(coupon != null && coupon.size()>0){
 										coupon.get(0);                       
-										hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(0).getVouchersCode(),item.getVoucher(),"满额赠送礼券");
+										hongShiMapper.saleVoucher(coupon.get(0).getVouchersCode(),item.getVoucher(),oauthLogin.getOauthId(),"满额赠送礼券");
 										System.out.println("发送成功");
 									}
 								}else{
@@ -3304,6 +3370,15 @@ public class UserServiceImpl implements UserServiceI {
 						createOrderItem.setTotalAmount(item.getPrice().multiply(new BigDecimal(item.getAmount())));//dse
 						System.out.println(JSON.toJSONString(createOrderItem));
 						hongShiMapper.createOrderItem(createOrderItem);
+						//记录限购产品购买次数
+						Product product= productMapper.selectByPrimaryKey(item.getProductId());
+						if(product.getFrequency()!=null && product.getFrequency()!=-1){
+							UserLimit userLimit = new UserLimit();
+							userLimit.setUserId(order.getUserId());
+							userLimit.setTime(new Date());
+							userLimit.setProductId(item.getProductId());
+							productMapper.insertUserLimit(userLimit);
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -3389,7 +3464,7 @@ public class UserServiceImpl implements UserServiceI {
 								//判断可用优惠券，是否已经发光了
 								if(coupon!=null && !coupon.isEmpty()) {
 									if(coupon != null && coupon.size()>0) {
-										hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(0).getVouchersCode(), pv.getVoucher(), "购指定产品赠送礼券");
+										hongShiMapper.saleVoucher(pv.getVoucher(), coupon.get(0).getVouchersCode(),  oauthLogin.getOauthId(), "购指定产品赠送礼券");
 										System.out.println("发送成功");
 									}
 								}else {
@@ -3512,8 +3587,8 @@ public class UserServiceImpl implements UserServiceI {
 					List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByGoodsCode(config.getVoucherCode());
 					if (coupon != null && coupon.size() > 0) {
 						try {
-							hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(0).getVouchersCode(),
-									config.getVoucherCode(),"抽奖赠送礼券");
+							hongShiMapper.saleVoucher(config.getVoucherCode(), coupon.get(0).getVouchersCode(), oauthLogin.getOauthId(), 
+									"抽奖赠送礼券");
 							map.put("result", true);
 							map.put("text", "恭喜抽中" + coupon.get(0).getPayQuota().setScale(2, BigDecimal.ROUND_HALF_UP)
 									+ "现金优惠券，奖品已放入账户中，请注意查看");
@@ -4610,6 +4685,31 @@ public class UserServiceImpl implements UserServiceI {
 	@Override
 	public List<LinkCouponLogs> selectLinkCoponLog(String name, String oauthId) {
 		return linkCouponMapper.selectLinkCoponLog(name, oauthId);
+	}
+
+	@Override
+	public List<MarketingEntrance> selectAllMarketingEntrance() {
+		return marketingEntranceMapper.selectAllMarketingEntrance();
+	}
+
+	@Override
+	public LaunchBargain getLaunchUser(String invitationCode) {
+		return bargainSettingMapper.getLaunchUser(invitationCode);
+	}
+
+	@Override
+	public int removeStock(Stock stock) {
+		return bargainSettingMapper.removeStock(stock);
+	}
+
+	@Override
+	public Stock selectStock(Integer valueId) {
+		return bargainSettingMapper.selectStock(valueId);
+	}
+
+	@Override
+	public List<BargainStatistics> getBargainLog(Integer id) {
+		return bargainSettingMapper.getBargainLog(id);
 	}
 
 }

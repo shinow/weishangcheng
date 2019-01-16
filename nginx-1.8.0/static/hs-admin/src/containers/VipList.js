@@ -66,6 +66,25 @@ _search = () => {
     })
  }
 
+_selectCat=(e)=>{
+ 		var sort = e.target.value;
+ 		req
+		.get('/uclee-backend-web/getAllvip')
+		.query({sort})
+		.end((err, res) => {
+			if (err) {
+			return err
+			}
+
+		var data = JSON.parse(res.text)
+			this.setState({
+				vips: data.vips,
+				size: data.size,
+			})
+		})
+
+}
+
   render() {
     var vips = this.state.vips.map((item, index) => {
       return (
@@ -78,11 +97,11 @@ _search = () => {
             />
           </td>
           <td width="13%">{item.cardNum}</td>
-          <td width="18%">{item.name}</td>
+          <td width="15%">{item.name}</td>
           <td width="13%">{item.phone}</td>
-          <td width="11%">{item.birthday}</td>
-          <td width="23%">{item.registTimeStr}</td>
-          <td width="15%">  
+          <td width="20%">{item.lastBuyStr}</td>
+          <td width="20%">{item.registTimeStr}</td>
+          <td width="12%">  
           	<button className="btn btn-warning" onClick={this._send.bind(this, item.userId)}>
               派送礼券
           	</button>
@@ -142,6 +161,11 @@ _search = () => {
           		</div>
           </div>
           <div style={{float:'right',marginTop:'25px'}}>
+          	<select name="sort" onChange={this._selectCat}>
+            		<option value=''>选择排序方式</option>
+            		<option value='0'>按会员注册时间排序</option>
+            		<option value='1'>按最后消费时间排序</option>
+            </select>&nbsp;&nbsp;
           	<button className="btn btn-success" onClick={this._sendAll}>批量发送</button>
           </div>
           <div style={{float:'left',marginTop:'25px'}}>
@@ -176,11 +200,11 @@ _search = () => {
                   	/>全选
                	  </th>
                   <th width="13%">卡号</th>
-                  <th width="18%">昵称</th>
+                  <th width="15%">昵称</th>
                   <th width="13%">手机</th>
-                  <th width="11%">生日</th>
-                  <th width="23%">会员注册时间</th>
-                  <th width="15%">操作</th>
+                  <th width="20%">最近消费时间</th>
+                  <th width="20%">会员注册时间</th>
+                  <th width="12%">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -232,7 +256,7 @@ _search = () => {
     var conf = confirm('确定要联动派送礼券吗？');
     var url='';
     if(conf){
-      url='/uclee-backend-web/sendVipMsg?userId=' + userId+'&sendVoucher=1';
+      url='/uclee-backend-web/sendVipMsg?userList=' + userId+'&sendVoucher=1';
       req
       .get('/uclee-backend-web/isCouponAmount?amount=1')
       .end((err, res) => {
@@ -287,14 +311,14 @@ _search = () => {
           }
         } else {
           var ret = true;
-          for (var i in this.state.checked)
-          {
-            console.log(this.state.checked[i]);
+          {/*for (var i in this.state.checked)
+          {*/}
+            console.log(this.state.checked);
             var url='';
             if(conf){
-              url='/uclee-backend-web/sendVipMsg?userId=' + this.state.checked[i]+'&sendVoucher=1';
+              url='/uclee-backend-web/sendVipMsg?userList=' + this.state.checked+'&sendVoucher=1';
             }else{
-              url='/vip-list';
+            	url='/uclee-backend-web/sendVipMsg?userList=' + this.state.checked;
             }
             req
             .get(url)
@@ -304,7 +328,7 @@ _search = () => {
               }
               ret = ret && res.body;
             })
-          }
+          {/*}*/}
           if (ret) {
                 alert('发送成功')
                 window.location =

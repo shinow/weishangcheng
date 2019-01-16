@@ -1,15 +1,17 @@
 package com.backend.service;
+
+import com.backend.model.ProductForm;
+import com.uclee.fundation.data.mybatis.model.*;
+import com.uclee.fundation.data.web.dto.*;
+
+import java.io.IOException;
 import java.text.ParseException;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
-
-import com.backend.model.ProductForm;
-import com.uclee.fundation.data.mybatis.model.*;
-import com.uclee.fundation.data.web.dto.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface BackendServiceI {
 
@@ -67,7 +69,7 @@ public interface BackendServiceI {
 
 	List<UserProfile> getUserListForUnBuy(Integer day);
 
-	boolean sendUnbuyMsg(Integer userId);
+	boolean sendUnbuyMsg(Integer userId, boolean sendVoucher);
 
 	boolean delStore(Integer storeId);
 	
@@ -221,4 +223,28 @@ public interface BackendServiceI {
 	int delCouponsProductsLinks(Integer vid, Integer pid);
 	
 	Double selectPageNum();
+	
+	List<ConsumerVoucher> selectAllConsumerVoucher();
+	
+	boolean updateConsumerVoucher(ConsumerVoucherPost consumerVoucherPost);
+	
+	boolean truncateConsumerVoucherHandler();
+	
+	String CreatWxVip() throws IOException;
+	
+	String yzPost(@Param("code")String code, @Param("redirect_uri")String redirect_uri);
+
+	List<UserProfile> selectAllVipLists();
+	
+	int insert(MarketingEntrance marketingEntrance);
+	
+	List<MarketingEntrance> selectAllMarketingEntrance();
+	
+	MarketingEntrance getMarketingEntrance(Integer id);
+	
+	int deleteMarketingEntrance(Integer id);
+	
+	int updateMarketingEntrance(MarketingEntrance marketingEntrance);
+
+	boolean sendCoupon(String vouchersCode, String goodsCode, String oauthId,String typeText);
 }

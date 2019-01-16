@@ -3,25 +3,88 @@ package com.uclee.web.user.controller;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.backend.service.BackendServiceI;
-import com.uclee.dynamicDatasource.DataSourceFacade;
 import com.uclee.datasource.service.DataSourceInfoServiceI;
 import com.uclee.date.util.DateUtils;
+import com.uclee.dynamicDatasource.DataSourceFacade;
 import com.uclee.file.util.FileUtil;
 import com.uclee.fundation.config.links.GlobalSessionConstant;
 import com.uclee.fundation.config.links.TermGroupTag;
 import com.uclee.fundation.config.links.WebConfig;
-import com.uclee.fundation.data.mybatis.mapping.*;
-import com.uclee.fundation.data.mybatis.model.*;
+import com.uclee.fundation.data.mybatis.mapping.BindingRewardsMapper;
+import com.uclee.fundation.data.mybatis.mapping.CommentMapper;
+import com.uclee.fundation.data.mybatis.mapping.ConfigMapper;
+import com.uclee.fundation.data.mybatis.mapping.EvaluationGiftsMapper;
+import com.uclee.fundation.data.mybatis.mapping.FullCutMapper;
+import com.uclee.fundation.data.mybatis.mapping.HongShiMapper;
+import com.uclee.fundation.data.mybatis.mapping.IntegralInGiftsMapper;
+import com.uclee.fundation.data.mybatis.mapping.ProductMapper;
+import com.uclee.fundation.data.mybatis.mapping.RechargeConfigMapper;
+import com.uclee.fundation.data.mybatis.mapping.RechargeRewardsRecordMapper;
+import com.uclee.fundation.data.mybatis.mapping.ShippingFullCutMapper;
+import com.uclee.fundation.data.mybatis.mapping.SignRecordMapper;
+import com.uclee.fundation.data.mybatis.mapping.BargainSettingMapper;
+import com.uclee.fundation.data.mybatis.model.Balance;
+import com.uclee.fundation.data.mybatis.model.Banner;
+import com.uclee.fundation.data.mybatis.model.BargainLog;
+import com.uclee.fundation.data.mybatis.model.BargainSetting;
+import com.uclee.fundation.data.mybatis.model.BindingRewards;
+import com.uclee.fundation.data.mybatis.model.Cart;
+import com.uclee.fundation.data.mybatis.model.Category;
+import com.uclee.fundation.data.mybatis.model.City;
+import com.uclee.fundation.data.mybatis.model.Comment;
+import com.uclee.fundation.data.mybatis.model.Config;
+import com.uclee.fundation.data.mybatis.model.DataSourceInfo;
+import com.uclee.fundation.data.mybatis.model.DeliverAddr;
+import com.uclee.fundation.data.mybatis.model.EvaluationGifts;
+import com.uclee.fundation.data.mybatis.model.Freight;
+import com.uclee.fundation.data.mybatis.model.FullCut;
+import com.uclee.fundation.data.mybatis.model.HomeQuickNavi;
+import com.uclee.fundation.data.mybatis.model.HongShiCommonResult;
+import com.uclee.fundation.data.mybatis.model.HongShiCoupon;
+import com.uclee.fundation.data.mybatis.model.HongShiOrder;
+import com.uclee.fundation.data.mybatis.model.HongShiRecharge;
+import com.uclee.fundation.data.mybatis.model.HongShiVip;
+import com.uclee.fundation.data.mybatis.model.HsVip;
+import com.uclee.fundation.data.mybatis.model.LaunchBargain;
+import com.uclee.fundation.data.mybatis.model.LinkCoupon;
+import com.uclee.fundation.data.mybatis.model.LinkCouponLogs;
+import com.uclee.fundation.data.mybatis.model.IntegralInGifts;
+import com.uclee.fundation.data.mybatis.model.Lnsurance;
+import com.uclee.fundation.data.mybatis.model.LotteryDrawConfig;
+import com.uclee.fundation.data.mybatis.model.LotteryRecord;
+import com.uclee.fundation.data.mybatis.model.MarketingEntrance;
+import com.uclee.fundation.data.mybatis.model.NapaStore;
+import com.uclee.fundation.data.mybatis.model.OauthLogin;
+import com.uclee.fundation.data.mybatis.model.Order;
+import com.uclee.fundation.data.mybatis.model.Payment;
+import com.uclee.fundation.data.mybatis.model.PaymentOrder;
+import com.uclee.fundation.data.mybatis.model.Product;
+import com.uclee.fundation.data.mybatis.model.ProductGroup;
+import com.uclee.fundation.data.mybatis.model.ProductParameters;
+import com.uclee.fundation.data.mybatis.model.Province;
+import com.uclee.fundation.data.mybatis.model.RechargeConfig;
+import com.uclee.fundation.data.mybatis.model.RechargeRewardsRecord;
+import com.uclee.fundation.data.mybatis.model.RefundOrder;
+import com.uclee.fundation.data.mybatis.model.Region;
+import com.uclee.fundation.data.mybatis.model.ShippingFullCut;
+import com.uclee.fundation.data.mybatis.model.SignRecord;
+import com.uclee.fundation.data.mybatis.model.SpecificationValue;
+import com.uclee.fundation.data.mybatis.model.User;
+import com.uclee.fundation.data.mybatis.model.UserInvitedLink;
+import com.uclee.fundation.data.mybatis.model.UserLimit;
+import com.uclee.fundation.data.mybatis.model.UserProfile;
+import com.uclee.fundation.data.mybatis.model.WxUser;
+import com.uclee.fundation.data.mybatis.model.vipIdentity;
 import com.uclee.fundation.data.web.dto.BargainPost;
 import com.uclee.fundation.data.web.dto.CartDto;
 import com.uclee.fundation.data.web.dto.ProductDto;
+import com.uclee.fundation.data.web.dto.Stock;
 import com.uclee.hongshi.service.HongShiVipServiceI;
 import com.uclee.sms.util.VerifyCode;
 import com.uclee.user.service.DuobaoServiceI;
 import com.uclee.user.service.UserServiceI;
 import com.uclee.user.util.JwtUtil;
 import com.uclee.userAgent.util.UserAgentUtils;
-
 import joptsimple.internal.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -34,11 +97,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,6 +142,8 @@ public class UserController extends CommonUserHandler{
 	@Autowired
 	private FullCutMapper fullCutMapper;
 	@Autowired
+	private BargainSettingMapper bargainSettingMapper;
+	@Autowired
 	private ShippingFullCutMapper shippingFullCutMapper;
 	@Autowired
 	private RechargeRewardsRecordMapper rechargeRewardsRecordMapper;
@@ -97,7 +169,7 @@ public class UserController extends CommonUserHandler{
 	
 	@RequestMapping("/getShakePageData")
 	public @ResponseBody Map<String,Object> getShakePageData(HttpServletRequest request) {
-		
+
 		return userService.getShakePageData();
 	}
 	/** 
@@ -216,15 +288,15 @@ public class UserController extends CommonUserHandler{
 		
 		return false;
 	}
-	
-	/** 
-	* @Title: verifyCode 
-	* @Description: 老板助手验证码发送类 
+
+	/**
+	* @Title: verifyCode
+	* @Description: 老板助手验证码发送类
 	* @param @param phone 目标手机
 	* @param @param request
-	* @param @return    设定文件 
-	* @return Boolean    返回类型 
-	* @throws 
+	* @param @return    设定文件
+	* @return Boolean    返回类型
+	* @throws
 	*/
 	@RequestMapping("/bossVerifyCode")
 	public @ResponseBody Boolean bossVerifyCode(String phone,HttpServletRequest request) {
@@ -244,8 +316,7 @@ public class UserController extends CommonUserHandler{
 		List<UserProfile> numbers = userService.selectAllProfileLists(userId);
 		if(numbers.get(0).getPhone()!=null && numbers.size()>0){
 			if(numbers.get(0).getPhone().equals(phone)){
-				System.out.println("没有修改手机号");	
-	
+				System.out.println("没有修改手机号");
 			}else{
 				return true;
 			}
@@ -326,6 +397,7 @@ public class UserController extends CommonUserHandler{
 		List<ProductGroup> groups = userService.getTermGroups(tags);
 		List<HomeQuickNavi> quickNavis = userService.getQuickNavis();
 		List<Banner> banner = userService.selectAllBanner();
+		System.out.println("DDDD======="+groups.get(0).getProducts().get(0).getPrePrice());
 		map.put("groups", groups);
 		map.put("banner", banner);
 		map.put("quickNavis", quickNavis);
@@ -511,7 +583,6 @@ public class UserController extends CommonUserHandler{
 		Map<String,Object> map = new TreeMap<String,Object>();
 		HttpSession session = request.getSession();
 		Integer userId = (Integer)session.getAttribute(GlobalSessionConstant.USER_ID);
-		
 
 		if(userId!=null){
 			//根据会员表有没有此手机号来决定跳转--外键获取的手机号有可能不是你本次输入的手机号，也不会跳转
@@ -528,11 +599,11 @@ public class UserController extends CommonUserHandler{
 		}
 		List<BindingRewards> bindingRewards = bindingRewardsMapper.selectOne();
 		if(bindingRewards!=null&&bindingRewards.size()>=1){
-			List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByGoodsCode(bindingRewards.get(0).getVoucherCode());
-			if(coupon.size()<bindingRewards.get(0).getAmount()||coupon.size()==0){
-				map.put("result",false);
-				return map;
-			}
+				List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByGoodsCode(bindingRewards.get(0).getVoucherCode());
+				if(coupon.size()<bindingRewards.get(0).getAmount() || coupon.size()==0 || bindingRewards.get(0).getAmount() == 0){
+					map.put("result",false);
+					return map;
+				}
 		}
 
 		map.put("result",true);
@@ -569,9 +640,12 @@ public class UserController extends CommonUserHandler{
 		Map<String,Object> map = new TreeMap<String,Object>();
 		HttpSession session = request.getSession();
 		Integer userId = (Integer)session.getAttribute(GlobalSessionConstant.USER_ID);
+		OauthLogin oauthLogin = userService.getOauthLoginInfoByUserId(userId);
+		
 		DeliverAddr defaultAddr = userService.getDefaultAddrByUserId(userId);
 		map.put("defaultAddr", defaultAddr);
 		List<CartDto> carts = userService.selectCartByIds(userId,cart);
+		List<HongShiVip> vip = hongShiVipService.getVipInfo(oauthLogin.getOauthId());
 		logger.info("cart post====="+JSON.toJSONString(carts));
 		BigDecimal total = new BigDecimal(0);
 		boolean isShippingFree=true;
@@ -603,7 +677,11 @@ public class UserController extends CommonUserHandler{
 		map.put("riqi",riqi.format(date));
 		System.out.println("Hours"+time.format(date.getTime()));
 
-		for(CartDto item:carts){
+		for(CartDto item:carts) {
+			if(vip!=null && vip.size()>0) {
+				item.setHsVipCode(vip.get(0).getcVipCode());
+			}
+			System.out.println("hsvipcode====="+item.getHsVipCode());
 			long value = date.getTime();
 			long value1 = 0;
             if(item.getStartTime()!=null){
@@ -617,21 +695,44 @@ public class UserController extends CommonUserHandler{
 			//判断提交订单商品是否有促销价
 			if(value1!=0||value2!=0){
 				if(item.getPromotion()!=null && value>value1 && value<value2){
-					total = total.add(item.getPromotion().multiply(new BigDecimal(item.getAmount())));
+						
+						if(vip.size()>0 && item.getVip()!=null){
+							//判断是会员，并且会员价不为null
+							if(item.getPromotion().compareTo(item.getVip()) == 1){
+								total = total.add(item.getVip().multiply(new BigDecimal(item.getAmount())));
+							
+							}else{
+							  total = total.add(item.getPromotion().multiply(new BigDecimal(item.getAmount())));
+							}
+						
+						} else{
+							total = total.add(item.getPromotion().multiply(new BigDecimal(item.getAmount())));
+						}		
+					
 				}else{
 					//判断是否是砍价商品
 					if(price==null){
-						total = total.add(item.getMoney().multiply(new BigDecimal(item.getAmount())));
+						if(vip.size()>0 && item.getVip()!=null){
+							total = total.add(item.getVip().multiply(new BigDecimal(item.getAmount())));	
+						}else{
+							total = total.add(item.getMoney().multiply(new BigDecimal(item.getAmount())));
+						}
+						
 					}else{
-						total = total.add(price.getPrice().multiply(new BigDecimal(item.getAmount())));
-					}	
+						total = total.add(price.getPrice().multiply(new BigDecimal(item.getAmount())));			
+					}
 				}
 			}else{
 				//判断是否是砍价商品
 				if(price==null){
-					total = total.add(item.getMoney().multiply(new BigDecimal(item.getAmount())));
-				}else{
-					total = total.add(price.getPrice().multiply(new BigDecimal(item.getAmount())));
+					if(vip.size()>0 && item.getVip()!=null){
+						total = total.add(item.getVip().multiply(new BigDecimal(item.getAmount())));
+					}else{
+						total = total.add(item.getMoney().multiply(new BigDecimal(item.getAmount())));
+					}
+					
+				}else{				
+						total = total.add(price.getPrice().multiply(new BigDecimal(item.getAmount())));					
 				}	
 			}
 
@@ -1597,7 +1698,7 @@ public class UserController extends CommonUserHandler{
 		List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByGoodsCode(evaluationGifts.get(0).getVoucherCode());
 		if(coupon!=null && !coupon.isEmpty()){
 			if(coupon != null && coupon.size()>0){                      
-				int a= hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(0).getVouchersCode(),evaluationGifts.get(0).getVoucherCode(),"评价赠送礼券");
+				int a= hongShiMapper.saleVoucher(evaluationGifts.get(0).getVoucherCode(),coupon.get(0).getVouchersCode(),oauthLogin.getOauthId(),"评价赠送礼券");
 				if(a>0){
 					System.out.println("发送成功");
 				}else{
@@ -1640,7 +1741,7 @@ public class UserController extends CommonUserHandler{
 							if(coupon!=null && !coupon.isEmpty()){
 								if(coupon != null && coupon.size()>0){
 					
-									int s= hongShiMapper.saleVoucher(oauthLogin.getOauthId(), coupon.get(i).getVouchersCode(),integralinGifts.get(i).getVoucherCode(),"签到赠送礼券");
+									int s= hongShiMapper.saleVoucher(integralinGifts.get(i).getVoucherCode(), coupon.get(i).getVouchersCode(),oauthLogin.getOauthId(),"签到赠送礼券");
 									if(s>0){
 										System.out.println("发送成功");
 									}else{
@@ -1848,44 +1949,59 @@ public class UserController extends CommonUserHandler{
 	 * 记录插入到砍价记录表
 	 */
 	@RequestMapping("/LaunchBargain")
-	public @ResponseBody Map<String,Object> LaunchBargain(HttpServletRequest request, String name, BigDecimal hsGoodsPrice, String codes) {
+	public @ResponseBody Map<String,Object> LaunchBargain(HttpServletRequest request, String name, BigDecimal hsGoodsPrice, String codes, Integer pid,String productName) {
 		Map<String,Object> map = new TreeMap<String,Object>();
 		HttpSession session = request.getSession();
-		BargainSetting bargain = userService.selectName(name);
 		Integer userId = (Integer)session.getAttribute(GlobalSessionConstant.USER_ID);
-		OauthLogin oauth = userService.getOauthLoginInfoByUserId(userId);
-		//得到外键和会员id
-		vipIdentity vip = userService.selectVipIdentity(oauth.getOauthId());
-		LaunchBargain launchBargain = new LaunchBargain();
-		if(vip!=null){
-			launchBargain.setUid(userId);
-			launchBargain.setOpenId(oauth.getOauthId());
-			launchBargain.setPid(bargain.getId());
-			launchBargain.setInitialAmount(hsGoodsPrice);
-			//以设置的随机金额最大值来给发起砍价的人砍掉相应的金额--kx
-			launchBargain.setCurrentAmount(bargain.getMaxprice());
-			launchBargain.setLaunchTime(new Date());
-			//状态1为发起状态，2为结束
-			launchBargain.setStatus(1);
-			System.out.println("code123=========="+codes);
-			launchBargain.setInvitationCode(codes);
-			System.out.println("插入到发起砍价表的信息"+JSON.toJSONString(launchBargain));
-			LaunchBargain record = userService.getbargainRecord(userId);
-			//判断是否有正在进行中的砍价活动
-			if(record==null){
-				userService.insertLaunchBargain(launchBargain);
-				//把发起人的砍价记录插入到砍价记录表
-				BargainLog log = new BargainLog();
-				log.setPid(launchBargain.getId());
-				log.setUid(launchBargain.getUid());
-				log.setOpenId(launchBargain.getOpenId());
-				//发起人砍掉的金额
-				log.setRandomAmount(bargain.getMaxprice());
-				log.setLaunchTime(new Date());
-				//关联邀请码
-				log.setInvitationCode(launchBargain.getInvitationCode());
-				userService.insertBargainLog(log);
+		BargainSetting bargain = userService.selectName(name);
+		//根据当前库存减去砍价发起记录锁定剩余库存
+		BargainPost  detail = bargainSettingMapper.getStock(productName);
+		System.out.println(JSON.toJSON(detail));
+		Integer stock =  detail.getHsStock();
+		List<LaunchBargain> jilu = bargainSettingMapper.getbargainSize(pid);
+		Integer dd= stock - jilu.size();
+		List<UserLimit> limit = productMapper.selectByLimit(userId, detail.getProductId());
+		if(limit.size() >= detail.getFrequency()){
+			map.put("limit", "本活动每人仅限参与"+detail.getFrequency()+"次");
+			return map;
+		}
+		if(stock - jilu.size() > 0 ){
+			
+			OauthLogin oauth = userService.getOauthLoginInfoByUserId(userId);
+			//得到外键和会员id
+			vipIdentity vip = userService.selectVipIdentity(oauth.getOauthId());
+			LaunchBargain launchBargain = new LaunchBargain();
+			if(vip!=null){
+				launchBargain.setUid(userId);
+				launchBargain.setOpenId(oauth.getOauthId());
+				launchBargain.setPid(bargain.getId());
+				launchBargain.setInitialAmount(hsGoodsPrice);
+				//以设置的随机金额最大值来给发起砍价的人砍掉相应的金额--kx
+				launchBargain.setCurrentAmount(bargain.getMaxprice());
+				launchBargain.setLaunchTime(new Date());
+				//状态1为发起状态，2为结束
+				launchBargain.setStatus(1);
+				launchBargain.setInvitationCode(codes);
+				System.out.println("插入到发起砍价表的信息"+JSON.toJSONString(launchBargain));
+				LaunchBargain record = userService.getbargainRecord(userId);
+				//判断是否有正在进行中的砍价活动
+				if(record==null){
+					userService.insertLaunchBargain(launchBargain);
+					//把发起人的砍价记录插入到砍价记录表
+					BargainLog log = new BargainLog();
+					log.setPid(launchBargain.getId());
+					log.setUid(launchBargain.getUid());
+					log.setOpenId(launchBargain.getOpenId());
+					//发起人砍掉的金额
+					log.setRandomAmount(bargain.getMaxprice());
+					log.setLaunchTime(new Date());
+					//关联邀请码
+					log.setInvitationCode(launchBargain.getInvitationCode());
+					userService.insertBargainLog(log);
+				}
 			}
+		}else{
+			map.put("stock", "商品已被抢完了");
 		}
 		return map;
 	}
@@ -1904,11 +2020,12 @@ public class UserController extends CommonUserHandler{
 		BargainSetting bargain = userService.selectName(productName);
 		Random random = new Random();
 		//根据活动设置生成砍价金额随机数
-		Double min=bargain.getMinprice();
-		Double max=bargain.getMaxprice();
+		double min=bargain.getMinprice();
+		double max=bargain.getMaxprice();
 		System.out.println("min======="+min);
 		System.out.println("max======="+max);
-		Double result = min + (Math.random() * ((max - min)));
+		double res = min + (Math.random() * ((max-min)));
+		BigDecimal result = new BigDecimal(res);
 		DecimalFormat df = new DecimalFormat("0.0");
 		System.out.println("result======="+result);
 			BargainLog log = new BargainLog();
@@ -1918,14 +2035,21 @@ public class UserController extends CommonUserHandler{
 			BigDecimal sumMoney = userService.selectSumMoney(codes);
 			//保证最后砍价金额等于最大能砍掉的金额
 			BargainPost value = userService.getValue(valueId);
-			double sum = sumMoney.intValue() + result;
-			double price = value.getHsGoodsPrice().intValue() - value.getPrice().intValue();
-			if(sum>price){				
-				result = price - sumMoney.intValue();
+			BigDecimal sum = sumMoney.add(result); 
+			
+			BigDecimal price = value.getHsGoodsPrice().subtract(value.getPrice());
+			System.out.println("sun=========="+sum+"price==========="+price);
+			if(sum.compareTo(price) == 1){	
+				result = price.subtract(sumMoney);
+				LaunchBargain user = userService.getLaunchUser(codes);
+				if(user != null){
+					System.out.println("发送砍价成功信息");
+					backendService.sendSucessMsg(user.getUid());
+				}
 			}
-			result = new Double(df.format(result));
+			result = new BigDecimal(df.format(result));
 			map.put("result", result);
-			log.setRandomAmount(result);
+			log.setRandomAmount(result.doubleValue());
 			log.setLaunchTime(new Date());
 			//关联邀请码			
 			log.setInvitationCode(codes);
@@ -1989,6 +2113,7 @@ public class UserController extends CommonUserHandler{
 		if(status1 == null){
 			map.put("status1", "活动已过期");
 		}
+
 		map.put("values", value);
 		return map;
 	}
@@ -2044,11 +2169,28 @@ public class UserController extends CommonUserHandler{
 		vipIdentity vip = userService.selectVipIdentity(oauthLogin.getOauthId());
 		List<HongShiCoupon> coupon = hongShiMapper.getHongShiCouponByGoodsCode(voucher);
 		List<LinkCouponLogs> log = userService.selectLinkCoponLog(name, oauthLogin.getOauthId());
-		
+		String d1 = "";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String d1 = sdf.format(log.get(0).getDay());//上次领取时间
+		if(log!=null && log.size()>0) {
+			d1 = sdf.format(log.get(0).getDay());//上次领取时间
+		}else{
+			if(vip != null && !vip.equals("")){
+				if(coupon!=null || coupon.size()>0){ 
+					hongShiMapper.saleVoucher(voucher,coupon.get(0).getVouchersCode(),oauthLogin.getOauthId(),"会员领礼券");
+					LinkCouponLogs linkCouponLogs = new LinkCouponLogs();
+					linkCouponLogs.setName(name);
+					linkCouponLogs.setOauthId(oauthLogin.getOauthId());
+					linkCouponLogs.setDay(new Date());
+					userService.insertLinkCouponLog(linkCouponLogs);
+					map.put("success", true);
+					return map;
+				}
+			}else{
+				map.put("vip", false);
+				return map;
+			}
+		}
 		String d2 = sdf.format(new Date());//当前时间
-		System.out.println(d1.equals(d2));//判断是否是同一天
 		//不是同一天才能继续领取
 		if(!d1.equals(d2)){
 			if(vip != null){
@@ -2060,9 +2202,11 @@ public class UserController extends CommonUserHandler{
 					linkCouponLogs.setDay(new Date());
 					userService.insertLinkCouponLog(linkCouponLogs);
 					map.put("success", true);
+					return map;
 				}
 			}else{
 				map.put("vip", false);
+				return map;
 			}
 		}else{
 			map.put("log", false);
@@ -2070,4 +2214,58 @@ public class UserController extends CommonUserHandler{
 		return map;
 	}
 	
+	/**
+	 * 验证是否是会员用户
+	 */
+	@RequestMapping("/verificationVip")	
+	public @ResponseBody Map<String,Object> verificationVip(HttpServletRequest request) {
+		Map<String,Object> map = new TreeMap<String,Object>();
+		HttpSession session = request.getSession();
+		//得到会员信息
+		Integer userId = (Integer)session.getAttribute(GlobalSessionConstant.USER_ID);
+		OauthLogin oauthLogin = userService.getOauthLoginInfoByUserId(userId);
+		
+		if(oauthLogin!=null) {
+			List<HongShiVip> vip = hongShiVipService.getVipInfo(oauthLogin.getOauthId());
+			if(vip.size()>0){
+				map.put("result", true);
+			}else {
+				map.put("result", false);
+			}
+		}else{
+			map.put("result", false);
+		}
+		return map;
+	}
+	
+	/**
+	 * 取会员卡营销活动入口列
+	 */
+	@RequestMapping("/selectAllMarketingEntrance")	
+	public @ResponseBody Map<String,Object> selectAllMarketingEntrance(HttpServletRequest request) {
+		Map<String,Object> map = new TreeMap<String,Object>();
+		List<MarketingEntrance> list = userService.selectAllMarketingEntrance();
+		map.put("list", list);
+		return map;
+	}
+	
+	@RequestMapping("/insertUserlimit")	
+	public @ResponseBody Map<String,Object> insertUserlimit(HttpServletRequest request, Integer productId, Integer valueId) {
+		Map<String,Object> map = new TreeMap<String,Object>();
+		HttpSession session = request.getSession();
+		Integer userId = (Integer)session.getAttribute(GlobalSessionConstant.USER_ID);
+		System.out.println("valueId==="+valueId);
+		UserLimit userLimit = new UserLimit();
+		userLimit.setUserId(userId);
+		userLimit.setTime(new Date());
+		userLimit.setProductId(productId);
+		productMapper.insertUserLimit(userLimit);
+		Stock hsStock = userService.selectStock(valueId);
+		Integer num = hsStock.getHsStock() - 1;
+		Stock stock = new Stock();
+		stock.setHsStock(num);
+		stock.setValueId(valueId);
+		userService.removeStock(stock);
+		return map;
+	}
  }

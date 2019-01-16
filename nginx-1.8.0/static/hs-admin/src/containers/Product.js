@@ -11,6 +11,7 @@ import 'react-quill/dist/quill.snow.css'
 import './input-moment/input-moment.less'
 import InputMoment from 'input-moment'
 import moment from 'moment';
+var myDate = new Date();
 class Product extends React.Component {
   constructor(props) {
     super(props)
@@ -22,7 +23,6 @@ class Product extends React.Component {
       pSearch: '',
       store: [],
       sSearch: '',
-
       currentSpec: {
         storeIds: []
       },
@@ -43,8 +43,12 @@ class Product extends React.Component {
       attribute3:'',
       attribute4:'',
       attribute5:'',
-      attribute6:''
-      
+      attribute6:'',
+      frequency:-1,
+      shelfDate:(myDate.getFullYear())+"-"+(myDate.getMonth()+1)+"-"+myDate.getDate(),
+      shelfTimes:myDate.getHours()+":"+myDate.getMinutes(),
+      downDate:(myDate.getFullYear()+10)+"-"+(myDate.getMonth()+1)+"-"+myDate.getDate(),
+      downTimes:myDate.getHours()+":"+myDate.getMinutes(),
     }
 
     this.hongShiProductById = {}
@@ -67,6 +71,9 @@ class Product extends React.Component {
     var end = this.state.currentSpec.endTimeStr
     var date1 = new Date(begin).getTime()
     var date2 = new Date(end).getTime()
+
+    console.log(this.state.shelfTimes)
+    console.log(this.state.downTimes)
     return (
       <DocumentTitle title={id ? '编辑产品' : '新增产品'}>
         <div className="product">
@@ -111,6 +118,18 @@ class Product extends React.Component {
                   name="sale"
                   className="form-control"
                   value={this.state.sale}
+                  onChange={this._simpleInputChange}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="control-label col-md-3">限购次数：</label>
+              <div className="col-md-9">
+                <input
+                  type="text"
+                  name="frequency"
+                  className="form-control"
+                  value={this.state.frequency}
                   onChange={this._simpleInputChange}
                 />
               </div>
@@ -163,6 +182,48 @@ class Product extends React.Component {
                   <option value={false}>否</option>
                   <option value={true}>是</option>
                 </select>
+                </div>
+            </div>
+            <div className="form-group">
+                <label className="control-label col-md-3">上架时间：</label>
+                <div className="col-md-3">
+	                <input
+	                  type="date"
+	                  name="shelfDate"
+	                  className="form-control"
+	                  value={this.state.shelfDate}
+	                  onChange={this._simpleInputChange}
+	                />
+                </div>
+                <div className="col-md-2">
+	                <input
+	                  type="time"
+	                  name="shelfTimes"
+	                  className="form-control"
+	                  value={this.state.shelfTimes}
+	                  onChange={this._simpleInputChange}
+	                />
+                </div>
+            </div>
+            <div className="form-group">
+                <label className="control-label col-md-3">下架时间：</label>
+                <div className="col-md-3">
+	                <input
+	                  type="date"
+	                  name="downDate"
+	                  className="form-control"
+	                  value={this.state.downDate}
+	                  onChange={this._simpleInputChange}
+	                />
+                </div>
+                <div className="col-md-2">
+	                <input
+	                  type="time"
+	                  name="downTimes"
+	                  className="form-control"
+	                  value={this.state.downTimes}
+	                  onChange={this._simpleInputChange}
+	                />
                 </div>
             </div>
             <div className="form-group">
@@ -370,6 +431,20 @@ class Product extends React.Component {
                                           className="form-control"
                                           value={item.prePrice}
                                           onChange={this._changePrePrice.bind(
+                                            this,
+                                            item
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="input-group input-group-sm">
+                                        <span className="input-group-addon">
+                                          会员价：
+                                        </span>
+                                        <input
+                                          type="text"
+                                          className="form-control"
+                                          value={item.vipPrice}
+                                          onChange={this._changeVipPrice.bind(
                                             this,
                                             item
                                           )}
@@ -592,6 +667,11 @@ class Product extends React.Component {
           shippingFree:res.body.productForm.shippingFree,
           title: res.body.productForm.title,
           explain: res.body.productForm.explain,
+          frequency: res.body.productForm.frequency,
+          shelfDate: res.body.productForm.shelfDate,
+      		shelfTimes:	res.body.productForm.shelfTimes,
+      		downDate:	res.body.productForm.downDate,
+      		downTimes:	res.body.productForm.downTimes,
           appointedTime: res.body.productForm.appointedTime,
           pickUpTimes: res.body.productForm.pickUpTimes,
           pickEndTimes: res.body.productForm.pickEndTimes,
@@ -721,6 +801,22 @@ class Product extends React.Component {
     nhongShiProduct.forEach((a, index) => {
       if (a.id === item.id) {
         nhongShiProduct[index].prePrice = e.target.value
+        changedItem = nhongShiProduct[index]
+      }
+    })
+    this.setState({
+      currentSpec: changedItem,
+      hongShiProduct: nhongShiProduct
+    })
+  }
+  
+  _changeVipPrice = (item, e) => {
+    var nhongShiProduct = this.state.hongShiProduct.slice()
+    var changedItem = null
+
+    nhongShiProduct.forEach((a, index) => {
+      if (a.id === item.id) {
+        nhongShiProduct[index].vipPrice = e.target.value
         changedItem = nhongShiProduct[index]
       }
     })
@@ -880,6 +976,18 @@ class Product extends React.Component {
         err: '销量不可以为负数'
       })
     }
+    if (!data.shelfDate || !data.shelfTimes) {
+      return this.setState({
+        err: '请填写商品上架时间'
+      })
+    }
+    
+    if (!data.downDate || !data.downTimes) {
+      return this.setState({
+        err: '请填写商品下架时间'
+      })
+		}
+    
     var params=data.title+'';
     if(this.props.params.id){
         params=params+'&productId='+this.props.params.id;
@@ -945,7 +1053,6 @@ class Product extends React.Component {
     this.setState({
       err: ''
     })
-
     var url = '/uclee-product-web/doAddProductHandler'
     if (this.props.params.id) {
       url = '/uclee-product-web/doUpdateProductHandler'

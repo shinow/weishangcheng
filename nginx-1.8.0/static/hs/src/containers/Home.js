@@ -189,20 +189,24 @@ const DetailPicker = (props) => {
             <div className="detail-picker-header-info">
               <div className="detail-picker-header-title">{props.title}</div>
               <div className="detail-picker-header-price">
+                <div>
+              		{props.vipPrice !== '-' ? "会员价：¥"+props.vipPrice : null}
+              	</div>
+              	
               {
               	((Date1)<(props.startTime)||(Date1)>(props.endTime)) ?
               <div>
-              	在售价：¥{props.totalPrice} {props.prePirce>0?<span className='pre'>原价：¥{props.prePirce}</span>:null}
+              	在售价：¥{props.totalPrice} {props.prePirce>0 ? <span className='pre'>原价：¥{props.prePirce}</span>  :null}
               </div>	
               	: 
               <div>
               	{((props.promotionPrice)==='-') ? 
-              	<div>
-              		在售价：¥{props.totalPrice} {props.prePirce>0?<span className='pre'>原价：¥{props.prePirce}</span>:null}
-              	</div> :
-              	<div>
-              		促销价：¥{props.promotionPrice} {props.prePirce>0?<span className='pre'>原价：¥{props.prePirce} 在售价：¥{props.totalPrice}</span>:null}
-              	</div>
+	              	<div>
+	              		在售价：¥{props.totalPrice} {props.prePirce>0 ? <span className='pre'>原价：¥{props.prePirce}</span> : null}
+	              	</div> :
+	              	<div>
+	              		促销价：¥{props.promotionPrice}{props.prePirce>0 ? <span className='pre'>原价：¥{props.prePirce} 在售价：¥{props.totalPrice}</span> : null}
+	              	</div>
               	}
               </div>
               }
@@ -303,6 +307,8 @@ class Home extends React.Component {
     this.specPreValueMap = {}
     this.specProPriceMap = {}
     this.specProValueMap = {}
+    this.specVipPriceMap = {}
+    this.specVipValueMap = {}
     this.specStartTimeMap = {}
     this.specStaValueMap = {}
     this.specEndTimeMap = {}
@@ -313,6 +319,8 @@ class Home extends React.Component {
     this.preMaxPrice = 0
     this.proMinPrice = 0
     this.proMaxPrice = 0
+    this.proMinVipPrice = 0
+    this.proMaxVipPrice = 0
   }
 
   componentDidMount() {
@@ -548,6 +556,13 @@ class Home extends React.Component {
 
           return item.promotionPrice
         })
+        var vipPrice = spec.values.map((item) => {
+          // calc the map BTW
+          this.specVipPriceMap[`_${item.valueId}`] = item.vipPrice
+          this.specVipValueMap[`_${item.valueId}`] = item.value
+
+          return item.vipPrice
+        })
         var startTime = spec.values.map((item) =>{
         	this.specStartTimeMap[`_${item.valueId}`] = item.startTime
         	this.specStaValueMap[`_${item.valueId}`] = item.value
@@ -564,6 +579,8 @@ class Home extends React.Component {
         this.preMaxPrice = Math.max.apply(null, prePrices)
         this.proMinPrice = Math.min.apply(null, promotionPrice)
         this.proMaxPrice = Math.max.apply(null, promotionPrice)
+        this.proMinVipPrice = Math.min.apply(null, vipPrice)
+        this.proMaxVipPrice = Math.max.apply(null, vipPrice)
     }
     var totalPrice = '-'
     if (this.specPriceMap[`_${this.state.currentSpecValudId}`]) {
@@ -576,6 +593,10 @@ class Home extends React.Component {
     var promotionPrice='-'
     if (this.specProPriceMap[`_${this.state.currentSpecValudId}`]) {
       promotionPrice = new Big(this.specProPriceMap[`_${this.state.currentSpecValudId}`]).toString()
+    }
+    var vipPrice='-'
+    if (this.specVipPriceMap[`_${this.state.currentSpecValudId}`]) {
+      vipPrice = new Big(this.specVipPriceMap[`_${this.state.currentSpecValudId}`]).toString()
     }
 		var startTime='00:00'
     if (this.specStartTimeMap[`_${this.state.currentSpecValudId}`]) {
@@ -622,14 +643,17 @@ class Home extends React.Component {
                           ? <span className="product-item-tag">
                               {item1.tag}
                             </span>
-                          : null}
-
+                          : null
+                        }
                         <div className="product-item-info">
                           <div className="product-item-title">
                             {item1.title}
                           </div>
                           <div className="product-item-price">
-                            <div className='left'>¥{'  ' + item1.price}</div>
+                            <div className="left">
+                            	¥{item1.vipPrice != null && item1.vipPrice < item1.price ? item1.vipPrice : item1.price}
+                            	<span className="pre"> ¥ {item1.prePrice}</span>
+                            </div>
                             <div className='right' onClick={()=>{
                               this.setState({
                                   showPick: true,
@@ -708,6 +732,7 @@ class Home extends React.Component {
               pickType={this.state.pickType}
               prePirce={prePirce}
               promotionPrice={promotionPrice}
+              vipPrice={vipPrice}
               startTime={startTime}
               endTime={endTime}
               />

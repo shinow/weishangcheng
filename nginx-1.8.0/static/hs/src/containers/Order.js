@@ -62,12 +62,13 @@ class Order extends React.Component {
       businessEndTime:'',
       hsgooscode: [],
       appointedTime:'',
-      riqi:''
+      riqi:'',
+      result:false
     }
     
-    this.lat = 21.908
+    this.lat = 23
     
-    this.lng = 110.85
+    this.lng = 113
   }
 
   componentDidMount() {
@@ -245,15 +246,15 @@ class Order extends React.Component {
     }
     var Total = (this.state.total -
                 this.state.voucherText +
-                (this.state.isShippingfree ? 0 : this.state.shippingFee) -
+                (this.state.isShippingfree === false ? this.state.shippingFee : 0) -
                 this.state.cut >
                 0
                 ? (this.state.total -
                     this.state.voucherText +
-                  (this.state.isShippingfree ? 0 : this.state.shippingFee)-
+                  (this.state.isShippingfree === false ? this.state.shippingFee : 0)-
                     this.state.cut).toFixed(2)
                 : 0)
-   var Difference = this.state.config.full - this.state.total
+   var Difference = this.state.config.full - this.state.total;
     return (
       <DocumentTitle title="提交订单">
       	<div>
@@ -275,7 +276,6 @@ class Order extends React.Component {
 	                    	}, () => {
 	                      console.log(this.state)
 	                       if (
-	                          this.state.isSelfPick &&
 	                          this.state.isSelfPick === 'false' &&
 	                          localStorage.getItem('latitude') != null &&
 	                          localStorage.getItem('longitude') != null
@@ -286,18 +286,15 @@ class Order extends React.Component {
 	                              this.state.defaultAddr.city +
 	                              this.state.defaultAddr.region +
 	                              this.state.defaultAddr.addrDetail
-	                            console.log('addr:' + addr)
-	                            console.log('this.state.isShippingfree:' + this.state.isShippingfree)
-	                            if(!this.state.isShippingfree){
-	                              geocoder.getLocation(addr,this.state.total)
-	                            }else{
-	                            	geocoder.getLocation(addr,this.state.total)
-	                            }
+	                              if(this.state.isShippingfree === false){
+	                              	geocoder.getLocation(addr,this.state.total)
+	                              }
 	                          }
 	                        }
 	                    })
 	                    sessionStorage.setItem('isSelfPick', e.target.value)
 	                    console.log(this.state.isSelfPick);
+
 	                   
 	                  }}/><label htmlFor="no">配送</label></span>
 	                
@@ -441,9 +438,9 @@ class Order extends React.Component {
 	              <input
 	                type="hidden"
 	                name="shippingFee"
-	                value={this.state.isShippingfree ? 0 : this.state.shippingFee}
+	                value={this.state.isShippingfree === false ? this.state.shippingFee : 0}
 	              />
-	              运费：<span className="money">￥{this.state.isShippingfree ? 0 : this.state.shippingFee}</span>
+	              运费：<span className="money">￥{this.state.isShippingfree === false ? this.state.shippingFee : 0}</span>
 	            </div>
 	            <div
 	              className="order-coupon"
@@ -539,28 +536,7 @@ salesInfoShowClick=()=>{
     sessionStorage.setItem('phone', e.target.value)
   }
 
-  /*_addrTabChange = a => {
-    sessionStorage.setItem('isSelfPick', a)
-    this.setState({
-      isSelfPick: a,
-      shippingFee: 0
-    })
-    if (
-      !a &&
-      localStorage.getItem('latitude') != null &&
-      localStorage.getItem('longitude') != null
-    ) {
-      if (this.state.defaultAddr) {
-        var addr =
-          this.state.defaultAddr.province +
-          this.state.defaultAddr.city +
-          this.state.defaultAddr.region +
-          this.state.defaultAddr.addrDetail
-        console.log('addr:' + addr)
-        geocoder.getLocation(addr)
-      }
-    }
-  }*/
+
   _init = () => {
     //调用地址解析类
     geocoder = new qq.maps.Geocoder({
@@ -568,21 +544,13 @@ salesInfoShowClick=()=>{
         console.log('result:' + result)
         this.lat = result.detail.location.lat
         this.lng = result.detail.location.lng
-        console.log('latlng:' + this.lat + ' ' + this.lng)
-        console.log(
-          Number(localStorage.getItem('latitude')) +
-            '  ff  ' +
-            Number(localStorage.getItem('longitude'))
-        )
-				
-			
+       
         var distances = Math.round(
           qq.maps.geometry.spherical.computeDistanceBetween(
             new qq.maps.LatLng(this.lat, this.lng),
             new qq.maps.LatLng( 
               Number(localStorage.getItem('latitude')),
               Number(localStorage.getItem('longitude'))
-            
             )
           ) / 100
           )/10
@@ -615,14 +583,21 @@ salesInfoShowClick=()=>{
     }
     e.preventDefault()
     var data = fto(e.target)
-    console.log("isSelfPick"+data.isSelfPick)
     if (!data.isSelfPick) {
       this.setState({
         error: errMap['isSelfPick_error']
       })
       return false
     }
-          var distance = Math.round(
+
+//调用地址解析类
+    geocoder = new qq.maps.Geocoder({
+      complete: (result) => {
+        console.log('result:' + result)
+        this.lat = result.detail.location.lat
+        this.lng = result.detail.location.lng
+       
+        var distances = Math.round(
           qq.maps.geometry.spherical.computeDistanceBetween(
             new qq.maps.LatLng(this.lat, this.lng),
             new qq.maps.LatLng( 
@@ -631,12 +606,21 @@ salesInfoShowClick=()=>{
             )
           ) / 100
           )/10
-    if (data.isSelfPick === 'false' && this.state.config.restrictedDistance<distance) {
+          if(distances < 1){
+          	var distance = 1
+          }else{
+          	var distance = distances
+          }
+				if (data.isSelfPick === 'false' && this.state.config.restrictedDistance < distance) {
       this.setState({
         error: errMap['Distribution_error']
       })
       return false
     }
+      }
+    })
+
+    
     console.log("addrId"+data.addrId)
     if (data.isSelfPick === 'false' && !data.addrId) {
       this.setState({
@@ -742,7 +726,30 @@ salesInfoShowClick=()=>{
       })
       return false;
     }
-    req.get('/uclee-user-web/status')
+    
+    var pickUpGoods = this.state.cartItems.map((item, index) => {
+
+			var date0 = data.pickDateStr+' 00:00:00.0';
+			var date = item.pickUpTimes+' 00:00:00.0';
+			var date1 = item.pickEndTimes+' 00:00:00.0';
+			date0 = date0.substring(0,19);    
+			date0 = date0.replace(/-/g,'/'); 
+			date = date.substring(0,19);    
+			date = date.replace(/-/g,'/'); 
+			date1 = date1.substring(0,19);    
+			date1 = date1.replace(/-/g,'/'); 
+			var timestamp0 = new Date(date0).getTime();
+			var timestamp = new Date(date).getTime();
+			var timestamp1 = new Date(date1).getTime();
+    	if(timestamp0<timestamp || timestamp0>timestamp1){	
+      	return -1;
+    	}
+
+    })
+	if(pickUpGoods.indexOf(-1) !== -1 ) {
+		alert("订单包含不在取货时间范围的产品!")
+	}else{
+		req.get('/uclee-user-web/status')
     .end((err, res) => {
       if (err) {
         return err
@@ -779,6 +786,7 @@ salesInfoShowClick=()=>{
           'seller/payment?paymentSerialNum=' + resJson.paymentSerialNum
       }
     })
+	}
     return false
   }
 }
@@ -787,20 +795,6 @@ class Addr extends React.Component {
   render() {
     return (
       <div className="order-addr">
-        {/*<div className="tab">
-          <div
-            className={'deli ' + (this.props.isSelfPick!=null&&this.props.isSelfPick ? '' : 'select')}
-            onClick={this.props._addrTabChange.bind(this, false)}
-          >
-            配送
-          </div>
-          <div
-            className={'self ' + (this.props.isSelfPick!=null&&this.props.isSelfPick ? 'select' : '')}
-            onClick={this.props._addrTabChange.bind(this, true)}
-          >
-            自提
-          </div>
-        </div>*/}
         <div className="detail">
           {!this.props.isSelfPick || this.props.isSelfPick === 'false'
             ? <div
@@ -869,22 +863,41 @@ class OrderItem extends React.Component {
       cartItems: []
     }
   }
+  
   render() {
     var items = this.props.cartItems.map((item, index) => {
+   
+         var danjia = ((Date1)<(item.startTime)||(Date1)>(item.endTime)||(item.promotion)===null) 
+             		?
+             		item.money
+             		:
+             		item.promotion
       return (
         <div className="order-item-info" key={index}>
           <img className="image" src={item.image} alt="" />
           <div className="title">{item.title}</div>
           <div className="sku-info">
             <span className="sku">{item.specification}({item.csshuxing})</span>
-            <span className="count pull-right">{((Date1)<(item.startTime)||(Date1)>(item.endTime)||(item.promotion)===null) ?"单价：￥"+item.money:"促销单价：￥"+item.promotion}</span>  
+            <span className="price pull-right">
+             	{	
+             		danjia > item.vip
+             		?
+             		(item.hsVipCode !== null && item.vip !== null ? '会员价：￥ '+item.vip : "单价：￥"+danjia)
+             		:
+             		"单价：￥"+danjia
+             	}<br />
+             	数量：x{item.amount}      	
+           </span>
           </div>
-          <div className="other">
+          <div style={{marginTop:'5px'}}>
            {item.appointedTime!==0&&item.appointedTime!==null ?
           	"提前"+item.appointedTime+"小时预定"
           	:null
            }
-            <span className="price pull-right">数量：x {item.amount}</span>
+           {item.pickUpTimes !== null && item.pickEndTimes !== null ?
+          	"取货时间:"+item.pickUpTimes+"至"+item.pickEndTimes
+  					:null
+           }
           </div>
         </div>
       )

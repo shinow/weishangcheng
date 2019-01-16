@@ -129,7 +129,7 @@ class Menu extends React.Component {
 							</li>
 							<li>
 								<Link to={'/bargain-list?merchantCode='+localStorage.getItem('merchantCode')}>
-								    砍价活动
+								    砍价活动设置
 								</Link>
 							</li>
 						</ul>
@@ -154,6 +154,11 @@ class Menu extends React.Component {
 								        评论管理
 								    </Link>
 								</li>
+								<li>
+									<Link to={'/marketing-entranceList?merchantCode='+localStorage.getItem('merchantCode')}>
+								        会员卡营销列表
+								    </Link>
+								</li>
 							</ul>
 						</a>
 					</li>
@@ -169,6 +174,11 @@ class Menu extends React.Component {
 							           	退款审核
 							         </Link>
 							       */}
+								</li>
+								<li>
+									<Link to={'/create-wx-vip?merchantCode='+localStorage.getItem('merchantCode')}>
+								        微信会员卡
+								    </Link>
 								</li>
 								<li>
 									<Link to={'/activity-config?merchantCode='+localStorage.getItem('merchantCode')}>

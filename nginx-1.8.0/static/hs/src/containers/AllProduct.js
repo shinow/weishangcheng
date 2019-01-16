@@ -14,9 +14,6 @@ class AllProductsCats extends React.Component{
 		var cats = this.props.cats.map(function(item, index) {
 			return (
 				<div className="all-prod-cat" onClick={()=>{window.location='/all-product?categoryId=' + item.categoryId+"&merchantCode="+localStorage.getItem('merchantCode')}}>
-					{/*<span className="all-prod-cat-icon">
-						{item.category.slice(0, 1)}
-					</span>*/}
 					{item.category}
 				</div>
 				);
@@ -163,20 +160,36 @@ class Item extends React.Component{
 	render(){
 		return (
 			<div className='all-prod-item'>
-				<div className='left' onClick={this._location.bind(this,'/detail/'+this.props.product.productId+"&merchantCode="+localStorage.getItem('merchantCode'))}>
-					<img className='image' src={this.props.product.image} alt=""/>
-				</div>
-				<div className='right' onClick={this._location.bind(this,'/detail/'+this.props.product.productId+"&merchantCode="+localStorage.getItem('merchantCode'))}>
-					<div className='title'>{this.props.product.title}</div>
-					<div className='bottom'>
-						<div className='count'>
-							已销：{this.props.product.salesAmount}件
+				{this.props.product.image === null && this.props.product.salesAmount === null 
+					?
+					null
+					:
+					<div>
+						<div className='left' onClick={this._location.bind(this,'/detail/'+this.props.product.productId+"&merchantCode="+localStorage.getItem('merchantCode'))}>
+							<img className='image' src={this.props.product.image} alt=""/>
 						</div>
-						<div className='price'>
-							¥ {this.props.product.price} <span className='pre'>¥ {this.props.product.prePrice}</span>	
+						<div className='right' onClick={this._location.bind(this,'/detail/'+this.props.product.productId+"&merchantCode="+localStorage.getItem('merchantCode'))}>
+							<div className='title'>{this.props.product.title}
+							
+							</div>
+							
+							<div className='bottom'>
+								<div className='count'>
+									已销：{this.props.product.salesAmount}件
+								</div>
+								<div className='price'>
+									{this.props.product.vipPrice!==null && this.props.product.vipPrice<this.props.product.price 
+										? 
+										' 会员价:¥  ' + this.props.product.vipPrice 
+										: 
+										"¥"+ this.props.product.price
+									}
+									<span className='pre'>¥ {this.props.product.prePrice}</span>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
+				}
 			</div>
 		);
 	}
